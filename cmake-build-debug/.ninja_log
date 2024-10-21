@@ -1,0 +1,10 @@
+# ninja log v5
+8	1629	7446830140768976	CMakeFiles/cursova.dir/Artist.cpp.obj	e362c5df36226c7e
+7	6443	7460213508801127	CMakeFiles/cursova.dir/main.cpp.obj	2369b08c9cc89878
+25	1678	7446830141271437	CMakeFiles/cursova.dir/Painting.cpp.obj	e812416c28556ec2
+7	786	7446832422741461	CMakeFiles/cursova.dir/Museum.cpp.obj	3921429be8321e93
+3	1246	7446830136952833	CMakeFiles/cursova.dir/Person.cpp.obj	2a15e03e00418b42
+6444	7300	7460213517227355	cursova.exe	fa636bd062fe8f9a
+3	849	7446830824719926	CMakeFiles/cursova.dir/Collector.cpp.obj	bb398fb80d4ae757
+64	1485	7442185452375737	CMakeFiles/cursova.dir/CommissionShop.cpp.obj	26838e9cc1d032fd
+38	1851	7446830143001249	CMakeFiles/cursova.dir/Auctioneer.cpp.obj	4ae9776eb87e02cc
