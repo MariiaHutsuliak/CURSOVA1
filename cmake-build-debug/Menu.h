@@ -15,39 +15,30 @@
 #include "Museum.h"
 #include "Person.h"
 
+
 class Menu {
+public:
+    // Moderator Menus
+    void artistMenu();        // Handles artist-specific actions
+    void collectorMenu();     // Handles collector-specific actions
+    void auctioneerMenu();    // Handles auctioneer-specific actions
+
+    // File Loaders
+    void loadArtists(std::vector<Artist>& artists);         // Load artists from file
+    void saveArtists(const std::vector<Artist>& artists);   // Save artists to file
+
+    void loadCollectors(std::vector<Collector>& collectors);         // Load collectors from file
+    void saveCollectors(const std::vector<Collector>& collectors);   // Save collectors to file
+
+    void loadAuctioneers(std::vector<Auctioneer>& auctioneers);         // Load auctioneers from file
+    void saveAuctioneers(const std::vector<Auctioneer>& auctioneers);   // Save auctioneers to file
+
 private:
-     Admin admin; // Admin object for authentication and role management
-    Artist artist; // Artist object for artist-specific actions
-    Collector collector; // Collector object for collector-specific actions
-    Auctioneer auctioneer; // Auctioneer object for auction-related actions
-    Painting painting; // Painting object to manage paintings
-    CommissionShop commissionShop; // CommissionShop object for shop-related actions
-    Museum museum; // Museum object for museum-related actions
-    FileManager fileManager; // FileManager object for file operations
-
-    vector<Painting> paintings;
-    vector<Artist> artists;
-
-    static bool mainMenu();
-    static void showPainting(Painting painting1);
-
-
-//
-//     bool authenticateAdmin(); // Method to authenticate admin
-//     bool authenticateModerator(); // Method to authenticate moderator
-//     void showAdminMenu(); // Admin-specific actions
-//    void showModeratorMenu(); // Moderator-specific actions
-//     void showViewerMenu(); // Viewer-specific actions
-//    static void showMainMenu(); // Displays the main menu
-//
-//    void manageArtists(); // Admin and moderator functionality
-//    void manageCollectors(); // Admin and moderator functionality
-//    void manageAuctions(); // Admin and moderator functionality
-//    static void viewPaintings(); // Function to view paintings (for all roles)
-//
-//public:
-//    static void start(); // Entry point to start the menu
+    // File paths for persistence
+    const std::string ARTIST_FILE = "artists.txt";
+    const std::string COLLECTOR_FILE = "collectors.txt";
+    const std::string AUCTIONEER_FILE = "auctioneers.txt";
 };
+
 
 #endif //CURSOVA_MENU_H

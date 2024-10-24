@@ -4,7 +4,6 @@
 #include <string>
 
 enum class AdminRole {
-    SUPER_ADMIN,
     ADMIN,
     VIEWER
 };

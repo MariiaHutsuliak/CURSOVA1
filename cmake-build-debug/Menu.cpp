@@ -1,156 +1,166 @@
 #include "Menu.h"
+#include "Admin.h"
+#include "Artist.h"
+#include "Collector.h"
+#include "Auctioneer.h"
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <string>
 
-bool Menu::mainMenu() {
-    int choice;
-    cin >> choice;
-    switch (choice) {
-        case 1 :{
+// File paths for persistence
+const std::string ARTIST_FILE = "artists.txt";
+const std::string COLLECTOR_FILE = "collectors.txt";
+const std::string AUCTIONEER_FILE = "auctioneers.txt";
 
+// Load and save functions for each role
+void Menu::loadArtists(std::vector<Artist>& artists) {
+    std::ifstream file(ARTIST_FILE);
+    if (file.is_open()) {
+        while (!file.eof()) {
+            Artist artist;
+            artist.setDataToObject(file);
+            artists.push_back(artist);
         }
-
-
+        file.close();
     }
 }
 
-void Menu::showPainting(Painting painting1) {
-    painting1.displayInfo(paintings);
+void Menu::saveArtists(const std::vector<Artist>& artists) {
+    std::ofstream file(ARTIST_FILE);
+    for (const auto& artist : artists) {
+        artist.getDataFromObject(file);
+    }
+    file.close();
 }
-//bool Menu::authenticateAdmin() {
-//    std::string username, password;
-//    std::cout << "Enter admin username: ";
-//    std::cin >> username;
-//    std::cout << "Enter admin password: ";
-//    std::cin >> password;
-//
-//    // For simplicity, we are just checking hardcoded credentials
-//    if (username == "admin" && password == "adminpass") {
-//        admin.setRole(AdminRole::SUPER_ADMIN);
-//        return true;
-//    }
-//    std::cout << "Invalid admin credentials!" << std::endl;
-//    return false;
-//}
-//
-//bool Menu::authenticateModerator() {
-//    std::string username, password;
-//    std::cout << "Enter moderator username: ";
-//    std::cin >> username;
-//    std::cout << "Enter moderator password: ";
-//    std::cin >> password;
-//
-//    // For simplicity, we are just checking hardcoded credentials
-//    if (username == "moderator" && password == "modpass") {
-//        admin.setRole(AdminRole::ADMIN);
-//        return true;
-//    }
-//    std::cout << "Invalid moderator credentials!" << std::endl;
-//    return false;
-//}
-//
-//void Menu::showAdminMenu() {
-//    int choice;
-//    do {
-//        std::cout << "Admin Menu:\n";
-//        std::cout << "1. Manage Artists\n2. Manage Collectors\n3. Manage Auctions\n4. View Paintings\n5. Exit\nEnter your choice: ";
-//        std::cin >> choice;
-//
-//        switch (choice) {
-//            case 1:
-//                manageArtists();
-//                break;
-//            case 2:
-//                manageCollectors();
-//                break;
-//            case 3:
-//                manageAuctions();
-//                break;
-//            case 4:
-//                viewPaintings();
-//                break;
-//            case 5:
-//                std::cout << "Exiting Admin Menu..." << std::endl;
-//                break;
-//            default:
-//                std::cout << "Invalid choice!" << std::endl;
-//                break;
-//        }
-//    } while (choice != 5);
-//}
-//
-//void Menu::showModeratorMenu() {
-//    int choice;
-//    do {
-//        std::cout << "Moderator Menu:\n";
-//        std::cout << "1. Manage Artists\n2. Manage Collectors\n3. View Paintings\n4. Exit\nEnter your choice: ";
-//        std::cin >> choice;
-//
-//        switch (choice) {
-//            case 1:
-//                manageArtists();
-//                break;
-//            case 2:
-//                manageCollectors();
-//                break;
-//            case 3:
-//                viewPaintings();
-//                break;
-//            case 4:
-//                std::cout << "Exiting Moderator Menu..." << std::endl;
-//                break;
-//            default:
-//                std::cout << "Invalid choice!" << std::endl;
-//        }
-//    } while (choice != 4);
-//}
-//
-//void Menu::showViewerMenu() {
-//    std::cout << "Viewer Menu:\n";
-//    viewPaintings(); // View-only access for paintings
-//}
-//
-//void Menu::showMainMenu() {
-//    int choice;
-//    std::cout << "1. Admin Login\n2. Moderator Login\n3. Viewer Access\nEnter your choice: ";
-//    std::cin >> choice;
-//    switch (choice) {
-//        case 1:
-//            if (authenticateAdmin()) {
-//                showAdminMenu();
-//            }
-//            break;
-//        case 2:
-//            if (authenticateModerator()) {
-//                showModeratorMenu();
-//            }
-//            break;
-//        case 3:
-//            showViewerMenu();
-//            break;
-//        default:
-//            std::cout << "Invalid choice!" << std::endl;
-//    }
-//}
-//
-// void Menu::start() {
-//    showMainMenu();
-//}
-//
-//void Menu::manageArtists() {
-//    std::cout << "Managing artists...\n";
-//    // Here you would call functions related to artists, such as adding, removing, or viewing artists
-//}
-//
-//void Menu::manageCollectors() {
-//    std::cout << "Managing collectors...\n";
-//    // Here you would call functions related to collectors, such as adding, removing, or viewing collectors
-//}
-//
-//void Menu::manageAuctions() {
-//    std::cout << "Managing auctions...\n";
-//    // Here you would call functions related to auction management, such as scheduling or viewing auctions
-//}
-//
-//void Menu::viewPaintings() {
-//    std::cout << "Viewing paintings...\n";
-//    // Here you would use the Painting class to list available paintings
-//}
+
+void Menu::loadCollectors(std::vector<Collector>& collectors) {
+    std::ifstream file(COLLECTOR_FILE);
+    if (file.is_open()) {
+        while (!file.eof()) {
+            Collector collector;
+            collector.setDataToObject(file);
+            collectors.push_back(collector);
+        }
+        file.close();
+    }
+}
+
+void Menu::saveCollectors(const std::vector<Collector>& collectors) {
+    std::ofstream file(COLLECTOR_FILE);
+    for (const auto& collector : collectors) {
+        collector.getDataFromObject(file);
+    }
+    file.close();
+}
+
+void Menu::loadAuctioneers(std::vector<Auctioneer>& auctioneers) {
+    std::ifstream file(AUCTIONEER_FILE);
+    if (file.is_open()) {
+        while (!file.eof()) {
+            Auctioneer auctioneer;
+            auctioneer.setDataToObject(file);
+            auctioneers.push_back(auctioneer);
+        }
+
+        file.close();
+    }
+}
+
+void Menu::saveAuctioneers(const std::vector<Auctioneer>& auctioneers) {
+    std::ofstream file(AUCTIONEER_FILE);
+    for (const auto& auctioneer : auctioneers) {
+        auctioneer.getDataFromObject(file);
+    }
+    file.close();
+}
+
+// Moderator Menus
+void Menu::artistMenu() {
+    int choice;
+    std::vector<Artist> artists;
+    loadArtists(artists);
+
+    do {
+        std::cout << "Artist Menu:\n1. Add Artist\n2. View Artists\n3. Sort Artists\n0. Back\n";
+        std::cin >> choice;
+        switch (choice) {
+            case 1:
+                Artist::addArtist(artists);
+                saveArtists(artists);
+                break;
+            case 2:
+                for (const auto& artist : artists) {
+                    artist.displayInfo();
+                }
+                break;
+            case 3:
+                Artist::sortArtistsByName(artists);
+                break;
+            case 0:
+                return;
+            default:
+                std::cout << "Invalid option. Try again." << std::endl;
+        }
+    } while (choice != 0);
+}
+
+void Menu::collectorMenu() {
+    int choice;
+    std::vector<Collector> collectors;
+    loadCollectors(collectors);
+
+    do {
+        std::cout << "Collector Menu:\n1. Add Collector\n2. View Collectors\n3. Sort Collectors\n0. Back\n";
+        std::cin >> choice;
+        switch (choice) {
+            case 1:
+                Collector::addCollector(collectors);
+                saveCollectors(collectors);
+                break;
+            case 2:
+                for (const auto& collector : collectors) {
+                    collector.displayInfo();
+                }
+                break;
+            case 3:
+                Collector::sortCollectorsByName(collectors);
+                break;
+            case 0:
+                return;
+            default:
+                std::cout << "Invalid option. Try again." << std::endl;
+        }
+    } while (choice != 0);
+}
+
+void Menu::auctioneerMenu() {
+    int choice;
+    std::vector<Auctioneer> auctioneers;
+    loadAuctioneers(auctioneers);
+
+    do {
+        std::cout << "Auctioneer Menu:\n1. Add Auctioneer\n2. View Auctioneers\n3. List Auctioned Paintings\n0. Back\n";
+        std::cin >> choice;
+        switch (choice) {
+            case 1:
+                Auctioneer::addAuctioneer(auctioneers);
+                saveAuctioneers(auctioneers);
+                break;
+            case 2:
+                for (const auto& auctioneer : auctioneers) {
+                    auctioneer.displayInfo();
+                }
+                break;
+            case 3:
+                for (const auto& auctioneer : auctioneers) {
+                    auctioneer.listAuctionedPaintings();
+                }
+                break;
+            case 0:
+                return;
+            default:
+                std::cout << "Invalid option. Try again." << std::endl;
+        }
+    } while (choice != 0);
+}
