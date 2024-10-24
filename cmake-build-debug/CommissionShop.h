@@ -1,13 +1,14 @@
 #ifndef CURSOVA_COMMISSIONSHOP_H
 #define CURSOVA_COMMISSIONSHOP_H
 #include "DataHandler.h"
+#include "Serializable.h"
 #include <map>
 #include <string>
 #include <iostream>
 #include <vector>
 #include "DataHandler.h"
 
-class CommissionShop : public DataHandler {
+class CommissionShop : public Serializable, DataHandler {
 private:
     std::map<std::string,double> paintingsForSale;
 public:
@@ -25,10 +26,10 @@ public:
     void sellPainting(const std::string &painting);
     void displayInfo() const override;
 
-    void save(std::ofstream& out) const override;
-    void load(std::ifstream& in) override;
-
     static void buyPaintingInShop(std::vector<CommissionShop>& shops);
+
+    void getDataFromObject(std::ostream &os) const override;
+    void setDataToObject(std::istream &is) override;
 
 };
 

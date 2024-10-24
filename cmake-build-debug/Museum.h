@@ -7,8 +7,9 @@
 #include <fstream>
 #include "Artist.h"
 #include "Painting.h"
+#include "Serializable.h"
 
-class Museum : public DataHandler{
+class Museum : public Serializable, DataHandler{
 private:
     std::string location;
     std::string title;
@@ -36,12 +37,14 @@ public:
     void input();
     void displayInfo() const override;
 
-    void save(std::ofstream& out) const override;
-    void load(std::ifstream& in) override;
     void load(std::ifstream& in, const std::vector<Artist>& artists);
 
     static void sortMuseumsByName(std::vector<Museum>& museums);
     void organizeExhibition() const;
+
+    void getDataFromObject(std::ostream &os) const override;
+    void setDataToObject(std::istream &is) override;
+
 
 };
 

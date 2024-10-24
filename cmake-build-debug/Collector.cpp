@@ -96,43 +96,6 @@ void Collector::purchasePainting(Painting* painting, int price) {
     std::cout << getName() << " purchased " << painting->getTitle() << " for $" << price << ".\n";
 }
 
-void Collector::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-
-    Person::save(out);
-    out << originalPaintings.size() << "\n";
-    for (const auto& painting : originalPaintings) {
-        painting.save(out);
-    }
-    out << copiedPaintings.size() << "\n";
-    for (const auto& painting : copiedPaintings) {
-        painting.save(out);
-    }
-}
-
-void Collector::load(std::ifstream& in, const std::vector<Artist>& artists) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-
-    Person::load(in);
-    size_t size;
-    in >> size;
-    in.ignore();
-    originalPaintings.resize(size);
-    for (auto& painting : originalPaintings) {
-        painting.load(in, artists);
-    }
-    in >> size;
-    in.ignore();
-    copiedPaintings.resize(size);
-    for (auto& painting : copiedPaintings) {
-        painting.load(in, artists);
-    }
-}
-
 void Collector::sortCollectorsByName(std::vector<Collector>& collectors) {
     if (collectors.empty()) {
         throw std::runtime_error("No collectors to sort.");
@@ -143,4 +106,42 @@ void Collector::sortCollectorsByName(std::vector<Collector>& collectors) {
     });
 }
 
+void Collector::getDataFromObject(std::ostream &os) const {
+    os << getName() << std::endl;
+    os << getBirthDate() << std::endl;
+    os << originalPaintings.size() << std::endl;
+    for (const auto& painting : originalPaintings) {
+        painting.getDataFromObject(os);
+    }
+    os << copiedPaintings.size() << std::endl;
+    for (const auto& painting : copiedPaintings) {
+        painting.getDataFromObject(os);
+    }
+}
 
+void Collector::setDataToObject(std::istream &is) {
+    std::string name;
+    std::getline(is, name);
+    setName(name);
+    std::string birthDate;
+    std::getline(is, birthDate);
+    setBirthDate(birthDate);
+    size_t originalCount;
+    is >> originalCount;
+    is.ignore();
+    originalPaintings.clear();
+    for (size_t i = 0; i < originalCount; ++i) {
+        Painting painting;
+        painting.setDataToObject(is);
+        originalPaintings.push_back(painting);
+    }
+    size_t copiedCount;
+    is >> copiedCount;
+    is.ignore();
+    copiedPaintings.clear();
+    for (size_t i = 0; i < copiedCount; ++i) {
+        Painting painting;
+        painting.setDataToObject(is);
+        copiedPaintings.push_back(painting);
+    }
+}

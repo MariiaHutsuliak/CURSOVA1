@@ -1,4 +1,5 @@
 #include "Painting.h"
+#include "Artist.h"
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -6,20 +7,19 @@
 
 Painting::Painting() : title(""), artist(nullptr), creationDate(""), genre(""), sold(false) {}
 
-Painting::Painting(const std::string& title, Artist* artist, const std::string& creationDate, const std::string& genre)
+Painting::Painting(const std::string& title, std::shared_ptr<Artist> artist, const std::string& creationDate, const std::string& genre)
         : title(title), artist(artist), creationDate(creationDate), genre(genre), sold(false) {}
 
 Painting::Painting(const Painting& other)
         : title(other.title), artist(other.artist), creationDate(other.creationDate), genre(other.genre), sold(other.sold) {}
 
 Painting::Painting(Painting&& other) noexcept
-        : title(std::move(other.title)), artist(other.artist), creationDate(std::move(other.creationDate)), genre(std::move(other.genre)), sold(other.sold) {
-    other.artist = nullptr;
-}
+        : title(std::move(other.title)), artist(std::move(other.artist)), creationDate(std::move(other.creationDate)), genre(std::move(other.genre)), sold(other.sold) {}
+
 Painting& Painting::operator=(const Painting& other) {
     if (this != &other) {
         title = other.title;
-        artist = other.artist;
+        artist = other.artist; // Use shared_ptr directly
         creationDate = other.creationDate;
         genre = other.genre;
         sold = other.sold;
@@ -30,11 +30,10 @@ Painting& Painting::operator=(const Painting& other) {
 Painting& Painting::operator=(Painting&& other) noexcept {
     if (this != &other) {
         title = std::move(other.title);
-        artist = other.artist;
+        artist = std::move(other.artist); // Move artist
         creationDate = std::move(other.creationDate);
         genre = std::move(other.genre);
         sold = other.sold;
-        other.artist = nullptr;
     }
     return *this;
 }
@@ -53,14 +52,14 @@ void Painting::setTitle(const std::string& title) {
 }
 
 Artist* Painting::getArtist() const {
-    return artist;
+    return artist.get(); // Return raw pointer
 }
 
-void Painting::setArtist(Artist* artist) {
+void Painting::setArtist(std::shared_ptr<Artist> artist) { // Change to shared_ptr
     if (!artist) {
         throw std::invalid_argument("Artist cannot be null.");
     }
-    this->artist = artist;
+    this->artist = artist; // Set artist directly
 }
 
 std::string Painting::getCreationDate() const {
@@ -120,41 +119,6 @@ void Painting::displayInfo() const {
               << "\nSold: " << (sold ? "Yes" : "No") << std::endl;
 }
 
-void Painting::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-    out << title << "\n" << (artist ? artist->getName() : "Unknown") << "\n"
-        << creationDate << "\n" << genre << "\n" << sold << "\n";
-}
-
-void Painting::load(std::ifstream& in, const std::vector<Artist>& artists) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-
-    std::getline(in, title);
-    std::string artistName;
-    std::getline(in, artistName);
-    std::getline(in, creationDate);
-    std::getline(in, genre);
-    in >> sold;
-    in.ignore();
-
-    // Find artist by name
-    artist = nullptr;
-    for (const auto& a : artists) {
-        if (a.getName() == artistName) {
-            artist = const_cast<Artist*>(&a);
-            break;
-        }
-    }
-
-    if (!artist) {
-        throw std::runtime_error("Artist not found while loading painting data.");
-    }
-}
-
 void Painting::addPainting(std::vector<Painting>& paintings, std::vector<Artist>& artists) {
     Painting painting;
     std::string artistName;
@@ -162,10 +126,10 @@ void Painting::addPainting(std::vector<Painting>& paintings, std::vector<Artist>
     std::cin.ignore();
     std::getline(std::cin, artistName);
 
-    Artist* artist = nullptr;
+    std::shared_ptr<Artist> artist = nullptr; // Change to shared_ptr
     for (auto& a : artists) {
         if (a.getName() == artistName) {
-            artist = &a;
+            artist = std::make_shared<Artist>(a); // Create shared_ptr for artist
             break;
         }
     }
@@ -174,7 +138,7 @@ void Painting::addPainting(std::vector<Painting>& paintings, std::vector<Artist>
         throw std::runtime_error("Artist not found.");
     }
 
-    painting.setArtist(artist);
+    painting.setArtist(artist); // Set artist using shared_ptr
     try {
         painting.input();
         paintings.push_back(std::move(painting));
@@ -237,4 +201,36 @@ double Painting::estimateValue() const {
 void Painting::updateSaleStatus(bool sold) {
     this->sold = sold;
     std::cout << "The painting has been marked as " << (sold ? "sold" : "available") << "." << std::endl;
+}
+
+void Painting::getDataFromObject(std::ostream& os) const {
+    os << title << std::endl;
+    if (artist) {
+        artist->getDataFromObject(os);
+    } else {
+        os << "Unknown artist" << std::endl;
+    }
+    os << creationDate << std::endl;
+    os << genre << std::endl;
+    os << sold << std::endl;
+}
+
+void Painting::setDataToObject(std::istream& is) {
+    std::string currentLine;
+    std::getline(is, title);
+    std::getline(is, currentLine);
+    if (currentLine == "Unknown artist") {
+        artist = nullptr;
+    } else {
+        artist = std::make_shared<Artist>(); // Create shared_ptr for artist
+        artist->setName(currentLine);
+        std::getline(is, currentLine);
+        artist->setBirthDate(currentLine);
+        std::getline(is, currentLine);
+        artist->setStyle(currentLine);
+    }
+    std::getline(is, creationDate);
+    std::getline(is, genre);
+    is >> sold;
+    is.ignore();
 }

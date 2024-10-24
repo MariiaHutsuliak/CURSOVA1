@@ -3,8 +3,10 @@
 #include "Person.h"
 #include <string>
 #include <vector>
+#include "DataHandler.h"
+#include "Serializable.h"
 
-class Artist: public Person {
+class Artist: public Person, DataHandler {
 private:
     std::string style;
 public:
@@ -23,12 +25,12 @@ public:
     [[nodiscard]] std::string getStyle() const;
     void setStyle(const std::string &style);
 
-    void save(std::ofstream& out) const override;
-    void load(std::ifstream& in) override;
-
     static void sortArtistsByName(std::vector<Artist>& artists);
     static vector<Artist> filterArtistsByStyle(const std::vector<Artist>& artists, const std::string& style);
     static vector<Artist> searchArtistsByName(const std::vector<Artist>& artists, const std::string& name);
+
+    void getDataFromObject(std::ostream &os) const override;
+    void setDataToObject(std::istream &is) override;
 
 
 };

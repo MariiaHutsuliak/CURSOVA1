@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "DataHandler.h"
 
-class Collector: public Person {
+class Collector: public Person, DataHandler  {
 private:
     std::vector<Painting> originalPaintings;
     std::vector<Painting> copiedPaintings;
@@ -33,10 +34,11 @@ public:
     static int placeBid(Painting* painting);
     void purchasePainting(Painting* painting, int price);
 
-    void save(std::ofstream& out) const override;
-    void load(std::ifstream& out) override;
     void load(std::ifstream& in, const std::vector<Artist>& artists);
     static void sortCollectorsByName(std::vector<Collector>& collectors);
+
+    void getDataFromObject(std::ostream &os) const override;
+    void setDataToObject(std::istream &is) override;
 };
 
 #endif // CURSOVA_COLLECTOR_H

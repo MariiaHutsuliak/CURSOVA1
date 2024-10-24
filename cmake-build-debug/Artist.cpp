@@ -51,7 +51,7 @@ void Artist::addArtist(std::vector<Artist>& artists) {
 }
 
 void Artist::displayInfo() const {
-    std::cout << "Name: " << getName() << "\nBirth date: " << getBirthDate() << "\nStyle: " << getStyle() << endl;
+    std::cout << "Name: " << getName() << "\nBirth date: " << getBirthDate() << "\nStyle: " << getStyle() << std::endl;
 }
 
 std::string Artist::getStyle() const {
@@ -63,25 +63,6 @@ void Artist::setStyle(const std::string &style) {
         throw std::invalid_argument("Style cannot be empty.");
     }
     this->style = style;
-}
-
-void Artist::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-    Person::save(out);
-    out << style << "\n";
-}
-
-void Artist::load(std::ifstream& in) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-    Person::load(in);
-    std::getline(in, style);
-    if (style.empty()) {
-        throw std::runtime_error("Error loading artist: style is empty.");
-    }
 }
 
 void Artist::sortArtistsByName(std::vector<Artist>& artists) {
@@ -128,3 +109,14 @@ std::vector<Artist> Artist::searchArtistsByName(const std::vector<Artist>& artis
     return result;
 }
 
+void Artist::getDataFromObject(std::ostream &os) const {
+    Person::getDataFromObject(os);
+    os << style << std::endl;
+}
+
+void Artist::setDataToObject(std::istream &is) {
+    Person::setDataToObject(is);
+    std::string currentLine;
+    std::getline(is, currentLine);
+    style = currentLine;
+}

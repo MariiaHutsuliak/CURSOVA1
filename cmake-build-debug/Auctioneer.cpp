@@ -4,7 +4,7 @@
 #include <vector>
 #include <stdexcept>
 
-Auctioneer::Auctioneer() : Person(), auctionDate("None") {}
+Auctioneer::Auctioneer() : Person{}, auctionDate{"None"} {}
 Auctioneer::Auctioneer(const std::string& name, const std::string& birthDate, const std::string& auctionDate)
         : Person(name, birthDate), auctionDate(auctionDate) {}
 
@@ -16,7 +16,8 @@ Auctioneer::Auctioneer(const Auctioneer &other)
     : Person(other), auctionedPaintings(other.auctionedPaintings), auctionDate(other.auctionDate) {}
 
 Auctioneer::Auctioneer(Auctioneer &&other) noexcept
-    : Person(other), auctionedPaintings(other.auctionedPaintings), auctionDate(other.auctionDate) {}
+        : Person(std::move(other)), auctionedPaintings(std::move(other.auctionedPaintings)), auctionDate(std::move(other.auctionDate)) {}
+
 
 Auctioneer& Auctioneer::operator=(const Auctioneer& other) {
     if (this == &other) return *this;
@@ -36,11 +37,11 @@ Auctioneer& Auctioneer::operator=(Auctioneer&& other) noexcept {
 
 Auctioneer::~Auctioneer() {}
 
-void Auctioneer::addAuctionedPainting(const std::string& painting, const std::string& date, double price) {
+void Auctioneer::addAuctionedPainting(const std::string& painting, const std::string& artistName, double price) {
     if (price <= 0) {
         throw std::invalid_argument("Price must be greater than zero.");
     }
-    auctionedPaintings[painting] = std::make_pair(date, price);
+    auctionedPaintings[painting] = std::make_pair(artistName, price);
 }
 
 std::string Auctioneer::getAuctionDate() const {
@@ -80,15 +81,24 @@ void Auctioneer::input() {
 }
 
 void Auctioneer::displayInfo() const {
-    std::cout << "Auctioneer: " << getName() << "\nAuction date: " << auctionDate << "\nAuctioned paintings: ";
+    std::cout << "Auctioneer: " << getName() << "\n";
+    std::cout << "Auction date: " << auctionDate << "\n";
+    std::cout << "Auctioned paintings: \n";
+
     if (auctionedPaintings.empty()) {
         std::cout << "No paintings are currently being auctioned.\n";
-        return;
-    }
-    for (const auto& pair : auctionedPaintings) {
-        std::cout << pair.first << " (available on " << pair.second.first << ", $" << pair.second.second << ")\n";
+    } else {
+        for (const auto& pair : auctionedPaintings) {
+            const std::string& paintingTitle = pair.first;
+            const std::string& artistName = pair.second.first;
+            double price = pair.second.second;
+
+            // Виводимо картину, ім'я художника та ціну
+            std::cout << paintingTitle << " by " << artistName << ", $" << price << "\n";
+        }
     }
 }
+
 
 void Auctioneer::sellPainting(const std::string& painting) {
     auto it = auctionedPaintings.find(painting);
@@ -97,46 +107,6 @@ void Auctioneer::sellPainting(const std::string& painting) {
     }
     auctionedPaintings.erase(it);
     std::cout << "Painting sold: " << painting << std::endl;
-}
-
-void Auctioneer::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-
-    Person::save(out);
-    out << auctionDate << "\n" << auctionedPaintings.size() << "\n";
-    for (const auto& pair : auctionedPaintings) {
-        out << pair.first << "\n" << pair.second.first << "\n" << pair.second.second << "\n";
-    }
-}
-
-void Auctioneer::load(std::ifstream& in) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-
-    Person::load(in);
-    std::getline(in, auctionDate);
-    if (auctionDate.empty()) {
-        throw std::runtime_error("Auction date is missing in file.");
-    }
-
-    size_t size;
-    in >> size;
-    in.ignore();
-    for (size_t i = 0; i < size; ++i) {
-        std::string painting, date;
-        double price;
-        std::getline(in, painting);
-        std::getline(in, date);
-        in >> price;
-        if (price <= 0) {
-            throw std::runtime_error("Invalid price found in auction data.");
-        }
-        in.ignore();
-        auctionedPaintings[painting] = std::make_pair(date, price);
-    }
 }
 
 void Auctioneer::sortAuctioneersByName(std::vector<Auctioneer>& auctioneers) {
@@ -185,6 +155,52 @@ void Auctioneer::listAuctionedPaintings() const {
     }
     std::cout << "Auctioned Paintings:" << std::endl;
     for (const auto& painting : auctionedPaintings) {
-        std::cout << "Title: " << painting.first << ", Price: " << painting.second.second << std::endl;
+        std::cout << "Title: " << painting.first << ", Artist: " << painting.second.first << ", Price: " << painting.second.second << std::endl;
     }
 }
+
+void Auctioneer::getDataFromObject(std::ostream &os) const {
+    Person::getDataFromObject(os);
+
+    for (const auto &entry : auctionedPaintings) {
+        const std::string &painting = entry.first;
+        const std::string &artistName = entry.second.first;
+        double price = entry.second.second;
+
+        os << painting << std::endl;
+        os << artistName << std::endl;
+        os << price << std::endl;
+    }
+
+    os << "AUCTION_DATE:" << std::endl;
+    os << auctionDate << std::endl;
+}
+
+
+void Auctioneer::setDataToObject(std::istream &is) {
+    Person::setDataToObject(is);
+
+    auctionedPaintings.clear();
+
+    std::string painting;
+    std::string artistName;
+    double price;
+
+    while (std::getline(is, painting)) {
+        if (painting == "AUCTION_DATE:") {
+            break;
+        }
+
+        std::getline(is, artistName);
+        is >> price;
+        is.ignore();
+
+        auctionedPaintings[painting] = std::make_pair(artistName, price);
+    }
+
+    std::getline(is, auctionDate);
+
+}
+
+
+

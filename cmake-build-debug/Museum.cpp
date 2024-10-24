@@ -97,37 +97,15 @@ void Museum::input() {
 void Museum::displayInfo() const {
     std::cout << "Museum Name: " << title << "\n";
     std::cout << "Location: " << location << "\n";
-}
+    if (collection.empty()) {
+        std::cout << "No paintings in the collection." << std::endl;
+    } else {
+        std::cout << "Paintings in the Collection:" << std::endl;
+        for (const auto& painting : collection) {
+            painting.displayInfo();
+        }
+    }
 
-void Museum::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-    out << title << "\n";
-    out << location << "\n";
-    out << collection.size() << "\n";
-    for (const auto& painting : collection) {
-        painting.save(out);
-    }
-}
-
-
-void Museum::load(std::ifstream& in, const std::vector<Artist>& artists) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-    std::getline(in, title);
-    std::getline(in, location);
-    if (title.empty() || location.empty()) {
-        throw std::runtime_error("Invalid data in file (empty title or location).");
-    }
-    size_t size;
-    in >> size;
-    in.ignore();
-    collection.resize(size);
-    for (auto& painting : collection) {
-        painting.load(in, artists);
-    }
 }
 
 void Museum::sortMuseumsByName(std::vector<Museum>& museums) {
@@ -158,5 +136,34 @@ void Museum::organizeExhibition() const {
         for (const auto& painting : collection) {
             painting.displayInfo();
         }
+    }
+}
+
+void Museum::getDataFromObject(std::ostream &os) const {
+    os << title << std::endl;
+    os << location << std::endl;
+    os << collection.size() << std::endl;
+    for (const auto& painting : collection) {
+        painting.getDataFromObject(os);
+    }
+}
+
+void Museum::setDataToObject(std::istream &is) {
+    std::getline(is, title);
+    if (title.empty()) {
+        throw std::invalid_argument("Museum title cannot be empty.");
+    }
+    std::getline(is, location);
+    if (location.empty()) {
+        throw std::invalid_argument("Location cannot be empty.");
+    }
+    size_t paintingCount;
+    is >> paintingCount;
+    is.ignore();
+    collection.clear();
+    for (size_t i = 0; i < paintingCount; ++i) {
+        Painting painting;
+        painting.setDataToObject(is);
+        collection.push_back(painting);
     }
 }

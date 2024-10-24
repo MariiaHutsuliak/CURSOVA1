@@ -19,4 +19,12 @@ add_executable(cursova cmake-build-debug/main.cpp
         cmake-build-debug/Auctioneer.h
         cmake-build-debug/CommissionShop.cpp
         cmake-build-debug/CommissionShop.h
+        cmake-build-debug/Menu.cpp
+        cmake-build-debug/Menu.h
+        cmake-build-debug/Serializable.cpp
+        cmake-build-debug/Serializable.h
+        cmake-build-debug/FileManager.cpp
+        cmake-build-debug/FileManager.h
+        cmake-build-debug/Admin.cpp
+        cmake-build-debug/Admin.h
 )

@@ -11,7 +11,7 @@ Person::Person(const std::string &name, const std::string &birthDate)
 
 Person::Person(const Person& other) : name(other.name), birthDate(other.birthDate) {}
 
-Person::Person(Person&& other) noexcept : name(other.name), birthDate(other.birthDate) {}
+Person::Person(Person&& other) noexcept : name(std::move(other.name)), birthDate(std::move(other.birthDate)) {}
 
 Person& Person::operator=(const Person &other) {
     if (this == &other) return *this;
@@ -33,7 +33,7 @@ std::string Person::getName() const {
     return name;
 }
 
-void Person::setName(const string &name) {
+void Person::setName(const std::string &name) {
     if (name.empty()) {
         throw std::invalid_argument("Name cannot be empty.");
     }
@@ -43,7 +43,7 @@ void Person::setName(const string &name) {
 std::string Person::getBirthDate() const {
     return birthDate;
 }
-void Person::setBirthDate(const string &birthDate) {
+void Person::setBirthDate(const std::string &birthDate) {
     if (birthDate.empty()) {
         throw std::invalid_argument("Birth date cannot be empty.");
     }
@@ -65,25 +65,15 @@ void Person::input() {
     }
 }
 
-void Person::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-    out << name << "\n" << birthDate << "\n";
+void Person::getDataFromObject(std::ostream &os) const {
+    os << name << std::endl;
+    os << birthDate << std::endl;
 }
 
-void Person::load(std::ifstream& in) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-
-    std::getline(in, name);
-    if (name.empty()) {
-        throw std::runtime_error("Name is missing in the file.");
-    }
-
-    std::getline(in, birthDate);
-    if (birthDate.empty()) {
-        throw std::runtime_error("Birth date is missing in the file.");
-    }
+void Person::setDataToObject(std::istream &is) {
+    std::string currentLine;
+    std::getline(is, currentLine);
+    name = currentLine;
+    std::getline(is, currentLine);
+    birthDate = currentLine;
 }

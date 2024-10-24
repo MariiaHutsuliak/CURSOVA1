@@ -3,13 +3,15 @@
 #include "Person.h"
 #include "Painting.h"
 #include "Collector.h"
+#include "DataHandler.h"
 #include <map>
 #include <string>
 
-class Auctioneer : public Person {
+class Auctioneer : public Person, DataHandler {
 private:
     std::map<std::string,std::pair<std::string,double>> auctionedPaintings;
     std::string auctionDate;
+
 public:
     Auctioneer();
     Auctioneer(const std::string &name, const std::string &birthDate, const std::string &auctionDate);
@@ -35,11 +37,11 @@ public:
     void displayInfo() const override;
     void sellPainting(const std::string &painting);
 
-    void save(std::ofstream& out) const override;
-    void load(std::ifstream& in) override;
-
     static void sortAuctioneersByName(std::vector<Auctioneer>& auctioneers);
     void listAuctionedPaintings() const;
+
+    void getDataFromObject(std::ostream &os) const override;
+    void setDataToObject(std::istream &is) override;
 
 };
 

@@ -72,36 +72,6 @@ void CommissionShop::displayInfo() const {
     }
 }
 
-void CommissionShop::save(std::ofstream& out) const {
-    if (!out) {
-        throw std::ios_base::failure("Error opening file for writing.");
-    }
-    out << paintingsForSale.size() << "\n";
-    for (const auto& pair : paintingsForSale) {
-        out << pair.first << "\n" << pair.second << "\n";
-    }
-}
-
-void CommissionShop::load(std::ifstream& in) {
-    if (!in) {
-        throw std::ios_base::failure("Error opening file for reading.");
-    }
-    size_t size;
-    in >> size;
-    in.ignore();
-    for (size_t i = 0; i < size; ++i) {
-        std::string painting;
-        double price;
-        std::getline(in, painting);
-        in >> price;
-        if (price <= 0) {
-            throw std::runtime_error("Invalid price found in file.");
-        }
-        in.ignore();
-        paintingsForSale[painting] = price;
-    }
-}
-
 void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
     if (shops.empty()) {
         std::cout << "No commission shops available.\n";
@@ -126,3 +96,29 @@ void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
     }
 }
 
+void CommissionShop::getDataFromObject(std::ostream &os) const {
+    os << paintingsForSale.size() << std::endl;
+    for (const auto& pair : paintingsForSale) {
+        os << pair.first << std::endl;
+        os << pair.second << std::endl;
+    }
+}
+
+void CommissionShop::setDataToObject(std::istream &is) {
+    size_t size;
+    is >> size;
+    is.ignore();
+    for (size_t i = 0; i < size; ++i) {
+        std::string paintingName;
+        double price;
+
+        std::getline(is, paintingName);
+        is >> price;
+        is.ignore();
+
+        if (price <= 0) {
+            throw std::invalid_argument("Invalid price read from file.");
+        }
+        paintingsForSale[paintingName] = price;
+    }
+}
