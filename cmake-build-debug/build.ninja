@@ -109,12 +109,6 @@ build CMakeFiles/cursova.dir/Serializable.cpp.obj: CXX_COMPILER__cursova_unscann
   OBJECT_DIR = CMakeFiles\cursova.dir
   OBJECT_FILE_DIR = CMakeFiles\cursova.dir
 
-build CMakeFiles/cursova.dir/FileManager.cpp.obj: CXX_COMPILER__cursova_unscanned_Debug D$:/CLion/CURSOVA1/cmake-build-debug/FileManager.cpp || cmake_object_order_depends_target_cursova
-  DEP_FILE = CMakeFiles\cursova.dir\FileManager.cpp.obj.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\cursova.dir
-  OBJECT_FILE_DIR = CMakeFiles\cursova.dir
-
 build CMakeFiles/cursova.dir/Admin.cpp.obj: CXX_COMPILER__cursova_unscanned_Debug D$:/CLion/CURSOVA1/cmake-build-debug/Admin.cpp || cmake_object_order_depends_target_cursova
   DEP_FILE = CMakeFiles\cursova.dir\Admin.cpp.obj.d
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
@@ -129,7 +123,7 @@ build CMakeFiles/cursova.dir/Admin.cpp.obj: CXX_COMPILER__cursova_unscanned_Debu
 #############################################
 # Link the executable cursova.exe
 
-build cursova.exe: CXX_EXECUTABLE_LINKER__cursova_Debug CMakeFiles/cursova.dir/main.cpp.obj CMakeFiles/cursova.dir/Person.cpp.obj CMakeFiles/cursova.dir/Artist.cpp.obj CMakeFiles/cursova.dir/Painting.cpp.obj CMakeFiles/cursova.dir/Collector.cpp.obj CMakeFiles/cursova.dir/Museum.cpp.obj CMakeFiles/cursova.dir/Auctioneer.cpp.obj CMakeFiles/cursova.dir/CommissionShop.cpp.obj CMakeFiles/cursova.dir/Menu.cpp.obj CMakeFiles/cursova.dir/Serializable.cpp.obj CMakeFiles/cursova.dir/FileManager.cpp.obj CMakeFiles/cursova.dir/Admin.cpp.obj
+build cursova.exe: CXX_EXECUTABLE_LINKER__cursova_Debug CMakeFiles/cursova.dir/main.cpp.obj CMakeFiles/cursova.dir/Person.cpp.obj CMakeFiles/cursova.dir/Artist.cpp.obj CMakeFiles/cursova.dir/Painting.cpp.obj CMakeFiles/cursova.dir/Collector.cpp.obj CMakeFiles/cursova.dir/Museum.cpp.obj CMakeFiles/cursova.dir/Auctioneer.cpp.obj CMakeFiles/cursova.dir/CommissionShop.cpp.obj CMakeFiles/cursova.dir/Menu.cpp.obj CMakeFiles/cursova.dir/Serializable.cpp.obj CMakeFiles/cursova.dir/Admin.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\cursova.dir

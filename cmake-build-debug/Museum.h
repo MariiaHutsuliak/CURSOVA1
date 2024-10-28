@@ -1,19 +1,22 @@
 #ifndef CURSOVA_MUSEUM_H
 #define CURSOVA_MUSEUM_H
-
+#include "Serializable.h"
+#include "DataHandler.h"
+#include "Painting.h"
+#include "Artist.h"
 #include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "Artist.h"
-#include "Painting.h"
-#include "Serializable.h"
+#include <algorithm>
+#include <stdexcept>
 
-class Museum : public Serializable, DataHandler{
+class Museum : public Serializable, public DataHandler{
 private:
     std::string location;
     std::string title;
     std::vector<Painting> collection;
+    constexpr static const std::string MUSEUM_FILE = "museums.txt";
 
 public:
     Museum();
@@ -32,12 +35,9 @@ public:
 
     void addPaintingToCollection(const Painting& painting);
     void removePaintingFromCollection(const std::string& paintingTitle);
-    void viewCollection() const;
 
     void input();
     void displayInfo() const override;
-
-    void load(std::ifstream& in, const std::vector<Artist>& artists);
 
     static void sortMuseumsByName(std::vector<Museum>& museums);
     void organizeExhibition() const;
@@ -45,6 +45,8 @@ public:
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;
 
+    static void loadMuseums(std::vector<Museum>& museums);
+    static void saveMuseums(const std::vector<Museum>& museums);
 
 };
 

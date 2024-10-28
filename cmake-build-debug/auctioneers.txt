@@ -1,0 +1,20 @@
+Susan Dove
+1996-04-09
+Rain
+Richard Black
+1200
+Scream
+Claude Mane
+300000
+AUCTION_DATE:
+2024-10-22
+Leon Oslo
+1990-03-10
+Dinner
+Jake Frost
+2000
+Sunflowers
+Van Gogh
+500000
+AUCTION_DATE:
+2024-10-23

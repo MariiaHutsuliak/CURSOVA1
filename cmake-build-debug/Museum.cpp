@@ -1,8 +1,4 @@
 #include "Museum.h"
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <stdexcept>
 
 Museum::Museum() : title("None"), location("Unknown") {}
 
@@ -38,9 +34,6 @@ std::string Museum::getLocation() const {
 }
 
 void Museum::setLocation(const std::string &location) {
-    if (location.empty()) {
-        throw std::invalid_argument("Location cannot be empty.");
-    }
     this->location = location;
 }
 
@@ -49,9 +42,6 @@ std::string Museum::getTitle() const {
 }
 
 void Museum::setTitle(const std::string &title) {
-    if (title.empty()) {
-        throw std::invalid_argument("Title cannot be empty.");
-    }
     this->title = title;
 }
 
@@ -65,33 +55,34 @@ void Museum::removePaintingFromCollection(const std::string& paintingTitle) {
                                  return painting.getTitle() == paintingTitle;
                              });
     if (it == collection.end()) {
-        throw std::runtime_error("Painting not found in the collection.");
-    }
-    collection.erase(it, collection.end());
-}
-
-void Museum::viewCollection() const {
-    if (collection.empty()) {
-        std::cout << "No paintings in the collection." << std::endl;
-        return;
-    }
-    std::cout << "Museum Collection: \n";
-    for (const auto& painting : collection) {
-        painting.displayInfo();
+        std::cout << "Painting not found in the collection. Please check the title.\n";
+    } else {
+        collection.erase(it, collection.end());
+        std::cout << "Painting " << paintingTitle << " removed from collection.\n";
     }
 }
 
 void Museum::input() {
-    std::cout << "Enter name of the museum: ";
-    std::getline(std::cin, title);
-    if (title.empty()) {
-        throw std::invalid_argument("Museum name cannot be empty.");
+    std::regex latinRegex("^[A-Za-z\\s]+$");
+
+    while (true) {
+        try {
+            std::cout << "Enter name of the museum: ";
+            std::getline(std::cin, title);
+            if (title.empty() || !std::regex_match(title, latinRegex)) {
+                throw std::runtime_error("Invalid name.");
+            }
+
+            std::cout << "Enter location: ";
+            std::getline(std::cin, location);
+            if (location.empty() || !std::regex_match(location, latinRegex)) {
+                throw std::runtime_error("Invalid location.");
+            }
+            break;
+        } catch (...) {
+            std::cout << "Invalid input. Please use only Latin letters and spaces.\n";
+        }
     }
-    std::cout << "Enter location: ";
-    std::getline(std::cin, location);
-    if (location.empty()) {
-        throw std::invalid_argument("Location cannot be empty.");
-    };
 }
 
 void Museum::displayInfo() const {
@@ -110,29 +101,34 @@ void Museum::displayInfo() const {
 
 void Museum::sortMuseumsByName(std::vector<Museum>& museums) {
     if (museums.empty()) {
-        throw std::runtime_error("No museums to sort.");
+        std::cout << "No museums to sort.\n";
+        return;
     }
     std::sort(museums.begin(), museums.end(), [](const Museum& a, const Museum& b) {
         return a.getTitle() < b.getTitle();
     });
+    for (const auto& museum : museums) museum.displayInfo();
 }
 
-void Museum::addMuseum(vector<Museum> &museums) {
-    try {
-        Museum newMuseum;
-        newMuseum.input();
-        museums.push_back(newMuseum);
-    } catch (const std::exception& e) {
-        std::cerr << "Error while adding museum: " << e.what() << std::endl;
+void Museum::addMuseum(std::vector<Museum> &museums) {
+    while (true) {
+        try {
+            Museum newMuseum;
+            newMuseum.input();
+            museums.push_back(newMuseum);
+            break;
+        } catch (...) {
+            std::cout << "An error occurred while adding the museum. Please try again.\n";
+        }
     }
 }
 
 void Museum::organizeExhibition() const {
-    std::cout << "Exhibition at " << location << "!" << std::endl;
+    std::cout << "Exhibition at " << location << "!\n";
     if (collection.empty()) {
-        std::cout << "No paintings available for exhibition." << std::endl;
+        std::cout << "No paintings available for exhibition.\n";
     } else {
-        std::cout << "Paintings on display:" << std::endl;
+        std::cout << "Paintings on display:\n";
         for (const auto& painting : collection) {
             painting.displayInfo();
         }
@@ -150,13 +146,7 @@ void Museum::getDataFromObject(std::ostream &os) const {
 
 void Museum::setDataToObject(std::istream &is) {
     std::getline(is, title);
-    if (title.empty()) {
-        throw std::invalid_argument("Museum title cannot be empty.");
-    }
     std::getline(is, location);
-    if (location.empty()) {
-        throw std::invalid_argument("Location cannot be empty.");
-    }
     size_t paintingCount;
     is >> paintingCount;
     is.ignore();
@@ -166,4 +156,27 @@ void Museum::setDataToObject(std::istream &is) {
         painting.setDataToObject(is);
         collection.push_back(painting);
     }
+}
+
+void Museum::loadMuseums(std::vector<Museum> &museums) {
+    std::ifstream file(MUSEUM_FILE);
+    if (file.is_open()) {
+        if (file.peek() == std::ifstream::traits_type::eof()) {
+            return;
+        }
+        while (!file.eof()) {
+            Museum museum;
+            museum.setDataToObject(file);
+            museums.push_back(museum);
+        }
+        file.close();
+    }
+}
+
+void Museum::saveMuseums(const std::vector<Museum> &museums) {
+    std::ofstream file(MUSEUM_FILE);
+    for (const auto& museum : museums) {
+        museum.getDataFromObject(file);
+    }
+    file.close();
 }

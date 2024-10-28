@@ -1,8 +1,4 @@
 #include "Person.h"
-#include <iostream>
-#include <stdexcept>
-#include <string>
-#include <limits>
 
 Person::Person() : name{"None"}, birthDate{"None"} {}
 
@@ -34,9 +30,6 @@ std::string Person::getName() const {
 }
 
 void Person::setName(const std::string &name) {
-    if (name.empty()) {
-        throw std::invalid_argument("Name cannot be empty.");
-    }
     this->name = name;
 }
 
@@ -44,24 +37,35 @@ std::string Person::getBirthDate() const {
     return birthDate;
 }
 void Person::setBirthDate(const std::string &birthDate) {
-    if (birthDate.empty()) {
-        throw std::invalid_argument("Birth date cannot be empty.");
-    }
     this->birthDate = birthDate;
 }
 
 void Person::input() {
-    std::cout << "Enter name: ";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, name);
-    if (name.empty()) {
-        throw std::invalid_argument("Name cannot be empty.");
-    }
+    std::regex latinRegex("^[A-Za-z\\s]+$");
+    std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
 
-    std::cout << "Enter birth date: ";
-    std::getline(std::cin, birthDate);
-    if (birthDate.empty()) {
-        throw std::invalid_argument("Birth date cannot be empty.");
+    while (true) {
+        try {
+            std::cout << "Enter name: ";
+            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//this shouldnt be here
+            std::getline(std::cin, name);
+            if (name.empty() || !std::regex_match(name, latinRegex)) {
+                std::cin.clear();//cin clear for being sure
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
+                throw std::runtime_error("Invalid name.");
+            }
+
+            std::cout << "Enter birth date (YYYY-MM-DD): ";
+            std::getline(std::cin, birthDate);
+            if (birthDate.empty() || !std::regex_match(birthDate, dateRegex)) {
+                std::cin.clear();//cin clear for being sure
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
+                throw std::runtime_error("Invalid birth date format.");
+            }
+            break;
+        } catch (...) {
+            std::cout << "Invalid input. Please follow the format and try again.\n";
+        }
     }
 }
 

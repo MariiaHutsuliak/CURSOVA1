@@ -2,9 +2,11 @@
 #define CURSOVA_PERSON_H
 #include "Serializable.h"
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <vector>
-
+#include <regex>
+#include <limits>
 
 class Person: public Serializable {
 private:
@@ -17,14 +19,14 @@ public:
     Person(Person&& other) noexcept;
     Person& operator=(const Person& other);
     Person& operator=(Person&& other) noexcept;
-    virtual ~Person();
+    ~Person();
 
     virtual void input();
 
-    std::string getName() const;
+    [[nodiscard]] std::string getName() const;
     void setName(const std::string &name);
 
-    std::string getBirthDate() const;
+    [[nodiscard]] std::string getBirthDate() const;
     void setBirthDate(const std::string &birthDate);
 
     void getDataFromObject(std::ostream &os) const override;

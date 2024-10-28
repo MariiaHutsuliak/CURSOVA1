@@ -2,15 +2,24 @@
 #define CURSOVA_COLLECTOR_H
 #include "Person.h"
 #include "Painting.h"
+#include "DataHandler.h"
+#include "Serializable.h"
 #include <string>
 #include <vector>
 #include <fstream>
-#include "DataHandler.h"
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <limits>
+#include <stdexcept>
+#include <regex>
 
-class Collector: public Person, DataHandler  {
+class Collector: public Person, public DataHandler {
 private:
     std::vector<Painting> originalPaintings;
     std::vector<Painting> copiedPaintings;
+    constexpr static const std::string COLLECTOR_FILE = "collectors.txt";
+
 public:
     Collector();
     Collector(const std::string &name, const std::string &birthDate);
@@ -20,9 +29,9 @@ public:
     Collector(Collector &&other) noexcept;
     Collector& operator=(const Collector& other);
     Collector& operator=(Collector&& other) noexcept;
-    ~Collector();
+    ~Collector() override;
 
-    static void addCollector(std::vector<Collector>& collectors);
+    void addCollector(std::vector<Collector>& collectors);
     void addOriginalPainting(const Painting& painting);
     void addCopiedPainting(const Painting& painting);
 
@@ -31,14 +40,17 @@ public:
 
     void input() override;
     void displayInfo() const override;
-    static int placeBid(Painting* painting);
+    int placeBid(Painting* painting);
     void purchasePainting(Painting* painting, int price);
 
-    void load(std::ifstream& in, const std::vector<Artist>& artists);
     static void sortCollectorsByName(std::vector<Collector>& collectors);
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;
+
+    static void loadCollectors(std::vector<Collector>& collectors);
+    static void saveCollectors(const std::vector<Collector>& collectors);
+
 };
 
 #endif // CURSOVA_COLLECTOR_H

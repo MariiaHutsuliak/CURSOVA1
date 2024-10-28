@@ -2,26 +2,30 @@
 #define CURSOVA_ADMIN_H
 #include "Serializable.h"
 #include <string>
+#include <vector>
+#include <iostream>
+#include "Artist.h"
+#include "Auctioneer.h"
+#include "Collector.h"
 
-enum class AdminRole {
-    ADMIN,
-    VIEWER
-};
-
-class Admin: public Serializable {
+class Admin : public Serializable {
 private:
     std::string userName;
     std::string password;
-    AdminRole role;
+    constexpr static const char* ADMIN_FILE = "admins.txt";
+    constexpr static const char* ARTIST_FILE = "artists.txt";
+    constexpr static const char* COLLECTOR_FILE = "collectors.txt";
+    constexpr static const char* AUCTIONEER_FILE = "auctioneers.txt";
+
+    Admin();
+
+    Admin(const Admin&) = delete;
+    Admin& operator=(const Admin&) = delete;
+    Admin(Admin&&) = delete;
+    Admin& operator=(Admin&&) = delete;
 
 public:
-    Admin();
-    Admin(const std::string &userName, const std::string &password, AdminRole role = AdminRole::VIEWER); // Default role is VIEWER
-    Admin(const Admin &other);
-    Admin(Admin &&other) noexcept;
-    Admin &operator=(const Admin &other);
-    Admin &operator=(Admin &&other) noexcept;
-    ~Admin();
+    static Admin& getInstance();
 
     const std::string &getUserName() const;
     void setUserName(const std::string &userName);
@@ -29,13 +33,29 @@ public:
     const std::string &getPassword() const;
     void setPassword(const std::string &password);
 
-    AdminRole getRole() const;
-    void setRole(AdminRole role);
+    static bool authenticateAdmin();
+
+    static void manageModerators(std::vector<Artist>& artists, std::vector<Collector>& collectors, std::vector<Auctioneer>& auctioneers);
+
+    template<typename T>
+    static void manageSpecificModerator(std::vector<T> &moderators, int actionChoice);
+
+    template<typename T>
+    static void addModerator(std::vector<T>& moderators);
+
+    template<typename T>
+    static void saveModeratorsToFile(const std::vector<T>& moderators, const char* fileName);
+
+    template<typename T>
+    static void removeModerator(std::vector<T>& moderators);
+
+    template<typename T>
+    static void viewModerators(const std::vector<T>& moderators);
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;
-
+    void loadAdmin();
+    void saveAdmin() const;
 };
 
-
-#endif //CURSOVA_ADMIN_H
+#endif // CURSOVA_ADMIN_H

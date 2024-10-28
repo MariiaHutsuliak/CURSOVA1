@@ -1,13 +1,16 @@
 #ifndef CURSOVA_PAINTING_H
 #define CURSOVA_PAINTING_H
-
 #include "DataHandler.h"
 #include "Serializable.h"
+#include "Artist.h"
 #include <string>
 #include <vector>
-#include <memory> // Include for std::unique_ptr
+#include <memory>
 #include <fstream>
-#include "Artist.h"
+#include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <regex>
 
 class Painting : public Serializable, public DataHandler {
 private:
@@ -16,6 +19,7 @@ private:
     std::string creationDate;
     std::string genre;
     bool sold;
+    constexpr static const std::string PAINTING_FILE = "painting.txt";
 
 public:
     Painting();
@@ -53,6 +57,10 @@ public:
 
     void getDataFromObject(std::ostream& os) const override;
     void setDataToObject(std::istream& is) override;
+
+    static void loadPaintings(std::vector<Painting>& paintings);
+    static void savePaintings(const std::vector<Painting>& paintings);
+
 };
 
 #endif // CURSOVA_PAINTING_H

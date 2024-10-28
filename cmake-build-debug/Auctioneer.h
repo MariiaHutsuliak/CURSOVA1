@@ -6,11 +6,17 @@
 #include "DataHandler.h"
 #include <map>
 #include <string>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <stdexcept>
+#include <regex>
 
-class Auctioneer : public Person, DataHandler {
+class Auctioneer : public Person, public DataHandler {
 private:
     std::map<std::string,std::pair<std::string,double>> auctionedPaintings;
     std::string auctionDate;
+    constexpr static const std::string AUCTIONEER_FILE = "auctioneers.txt";
 
 public:
     Auctioneer();
@@ -23,7 +29,7 @@ public:
     Auctioneer& operator=(Auctioneer&& other) noexcept;
     ~Auctioneer() override;
 
-    static void addAuctioneer(std::vector<Auctioneer>& auctioneers);
+    void addAuctioneer(std::vector<Auctioneer>& auctioneers);
     void addAuctionedPainting(const std::string &painting, const std::string &date, double price);
 
     [[nodiscard]] std::string getAuctionDate() const;
@@ -31,18 +37,19 @@ public:
 
     [[nodiscard]] std::map<std::string, std::pair<std::string,double>> getAuctionedPaintings() const;
 
-    static void holdAuction(Painting* painting, vector<Collector*>& collectors);
+    static void holdAuction(Painting* painting, std::vector<Collector*>& collectors);
 
     void input() override;
     void displayInfo() const override;
     void sellPainting(const std::string &painting);
 
     static void sortAuctioneersByName(std::vector<Auctioneer>& auctioneers);
-    void listAuctionedPaintings() const;
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;
 
+    static void loadAuctioneers(std::vector<Auctioneer>& auctioneers);
+    static void saveAuctioneers(const std::vector<Auctioneer>& auctioneers);
 };
 
 
