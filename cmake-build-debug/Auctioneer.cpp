@@ -34,20 +34,6 @@ Auctioneer& Auctioneer::operator=(Auctioneer&& other) noexcept {
 
 Auctioneer::~Auctioneer() {}
 
-
-void Auctioneer::addAuctionedPainting(const std::string& painting, const std::string& artistName, double price) {
-    std::regex latinRegex("^[A-Za-z\\s]+$");
-    if (!std::regex_match(painting, latinRegex) || !std::regex_match(artistName, latinRegex)) {
-        std::cout << "Invalid painting or artist name. Please use only Latin letters and spaces.\n";
-        return;
-    }
-    if (price <= 0) {
-        std::cout << "Price must be greater than zero. Please try again." << std::endl;
-        return;
-    }
-    auctionedPaintings[painting] = std::make_pair(artistName, price);
-}
-
 std::string Auctioneer::getAuctionDate() const {
     return auctionDate;
 }
@@ -58,19 +44,6 @@ void Auctioneer::setAuctionDate(const std::string &auctionDate) {
 
 std::map<std::string, std::pair<std::string,double>> Auctioneer::getAuctionedPaintings() const {
     return auctionedPaintings;
-}
-
-void Auctioneer::addAuctioneer(std::vector<Auctioneer>& auctioneers) {
-    while (true) {
-        try {
-            Auctioneer auctioneer;
-            auctioneer.input();
-            auctioneers.push_back(std::move(auctioneer));
-            break;
-        } catch (...) {
-            std::cout << "An error occurred while adding the auctioneer. Please try again." << std::endl;
-        }
-    }
 }
 
 void Auctioneer::input() {
@@ -165,17 +138,6 @@ void Auctioneer::displayInfo() const {
     }
 }
 
-
-void Auctioneer::sellPainting(const std::string& painting) {
-    auto it = auctionedPaintings.find(painting);
-    if (it == auctionedPaintings.end()) {
-        std::cout << "Painting not found in auction. Please try another title." << std::endl;
-    } else {
-        auctionedPaintings.erase(it);
-        std::cout << "Painting sold: " << painting << std::endl;
-    }
-}
-
 void Auctioneer::sortAuctioneersByName(std::vector<Auctioneer>& auctioneers) {
     if (auctioneers.empty()) {
         std::cout << "No auctioneers to sort." << std::endl;
@@ -194,24 +156,37 @@ void Auctioneer::holdAuction(Painting* painting, std::vector<Collector*>& collec
         return;
     }
 
+    if (painting->getSold()) {
+        std::cout << "This painting has already been auctioned and cannot be auctioned again.\n";
+        return;
+    }
+
     std::cout << "Auction for: " << painting->getTitle() << "\n";
     int highestBid = 0;
-    Collector *highestBidder = nullptr;
+    Collector* highestBidder = nullptr;
 
-    for (auto &collector: collectors) {
+    // Collect bids from all collectors
+    for (auto& collector : collectors) {
         int bid = collector->placeBid(painting);
         if (bid > highestBid) {
             highestBid = bid;
             highestBidder = collector;
         }
-        if (highestBidder) {
-            highestBidder->purchasePainting(painting, highestBid);
-            std::cout << highestBidder->getName() << " won the auction for $" << highestBid << "!\n";
-        } else {
-            std::cout << "No bids were placed.\n";
-        }
+    }
+
+    // Finalize the auction by assigning the painting to the highest bidder
+    if (highestBidder) {
+        highestBidder->purchasePainting(painting, highestBid);
+        std::cout << highestBidder->getName() << " won the auction for $" << highestBid << "!\n";
+
+        // Mark the painting as sold in memory
+        painting->updateSaleStatus();
+        std::cout << "Painting titled \"" << painting->getTitle() << "\" has been marked as sold and cannot be re-auctioned.\n";
+    } else {
+        std::cout << "No bids were placed.\n";
     }
 }
+
 
 void Auctioneer::getDataFromObject(std::ostream &os) const {
     Person::getDataFromObject(os);
@@ -258,19 +233,21 @@ void Auctioneer::setDataToObject(std::istream &is) {
 void Auctioneer::loadAuctioneers(std::vector<Auctioneer> &auctioneers) {
     std::ifstream file(AUCTIONEER_FILE);
     if (!file.is_open()) {
-        std::cerr << "Error opening auctioneer file\n";
+        std::cerr << "Error opening collector file.\n";
         return;
     }
 
     auctioneers.clear();
-    Auctioneer auctioneer;
-    while (true) {
+    while (file.peek() != std::ifstream::traits_type::eof()) {
+        Auctioneer auctioneer;
         auctioneer.setDataToObject(file);
-        if (file.fail()) {
-            break;
+
+        // Check for failed data read to avoid pushing incomplete collectors
+        if (!file.fail()) {
+            auctioneers.push_back(auctioneer);
         }
-        auctioneers.push_back(auctioneer);
     }
+
     file.close();
 }
 

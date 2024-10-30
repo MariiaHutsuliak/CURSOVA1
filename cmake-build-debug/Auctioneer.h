@@ -29,19 +29,15 @@ public:
     Auctioneer& operator=(Auctioneer&& other) noexcept;
     ~Auctioneer() override;
 
-    void addAuctioneer(std::vector<Auctioneer>& auctioneers);
-    void addAuctionedPainting(const std::string &painting, const std::string &date, double price);
-
     [[nodiscard]] std::string getAuctionDate() const;
     void setAuctionDate(const std::string &auctionDate);
 
     [[nodiscard]] std::map<std::string, std::pair<std::string,double>> getAuctionedPaintings() const;
 
-    static void holdAuction(Painting* painting, std::vector<Collector*>& collectors);
+    void holdAuction(Painting* painting, std::vector<Collector*>& collectors);
 
     void input() override;
     void displayInfo() const override;
-    void sellPainting(const std::string &painting);
 
     static void sortAuctioneersByName(std::vector<Auctioneer>& auctioneers);
 

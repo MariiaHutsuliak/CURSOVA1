@@ -53,21 +53,6 @@ void Artist::input() {
     }
 }
 
-
-void Artist::addArtist(std::vector<Artist>& artists) {
-    while (true) {
-        try {
-            Artist artist;
-            artist.input();
-            std::cout << "-----------------------------";
-            artists.push_back(std::move(artist));
-            break;
-        } catch (...) {
-            std::cout << "An error occurred while adding the artist. Please try again." << std::endl;
-        }
-    }
-}
-
 void Artist::displayInfo() const {
     std::cout << "Name: " << getName() << "\nBirth date: " << getBirthDate() << "\nStyle: " << getStyle() << std::endl << std::endl;
 }
@@ -139,17 +124,22 @@ void Artist::setDataToObject(std::istream &is) {
 
 void Artist::loadArtists(std::vector<Artist>& artists) {
     std::ifstream file(ARTIST_FILE);
-    if (!file.is_open() || file.peek() == std::ifstream::traits_type::eof()) {
+    if (!file.is_open()) {
+        std::cerr << "Error opening collector file.\n";
         return;
     }
 
-    while (!file.eof()) {
+    artists.clear();
+    while (file.peek() != std::ifstream::traits_type::eof()) {
         Artist artist;
         artist.setDataToObject(file);
-        if (!artist.getName().empty() && !artist.getStyle().empty()) {
+
+        // Check for failed data read to avoid pushing incomplete collectors
+        if (!file.fail()) {
             artists.push_back(artist);
         }
     }
+
     file.close();
 }
 

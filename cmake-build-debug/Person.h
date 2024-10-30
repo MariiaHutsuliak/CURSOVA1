@@ -19,7 +19,7 @@ public:
     Person(Person&& other) noexcept;
     Person& operator=(const Person& other);
     Person& operator=(Person&& other) noexcept;
-    ~Person();
+    ~Person() override;
 
     virtual void input();
 

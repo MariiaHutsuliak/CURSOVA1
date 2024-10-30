@@ -25,7 +25,6 @@ public:
     Artist& operator=(Artist&& other) noexcept;
     ~Artist() override;
 
-    void addArtist(std::vector<Artist>& artists);
     void displayInfo() const override;
     void input() override;
 

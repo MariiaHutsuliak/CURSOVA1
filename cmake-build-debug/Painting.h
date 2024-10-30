@@ -42,18 +42,17 @@ public:
     [[nodiscard]] std::string getGenre() const;
     void setGenre(const std::string& genre);
 
-    [[nodiscard]] bool isSold() const;
+    [[nodiscard]] bool getSold() const;
     void setSold(bool sold);
 
     void input();
     void displayInfo() const override;
 
-    static void addPainting(std::vector<Painting>& paintings, std::vector<Artist>& artists);
     static void sortPaintingsByTitle(std::vector<Painting>& paintings);
     static std::vector<Painting> filterPaintingsByGenre(const std::vector<Painting>& paintings, const std::string& genre);
     static std::vector<Painting> searchPaintingsByTitle(const std::vector<Painting>& paintings, const std::string& title);
     [[nodiscard]] double estimateValue() const;
-    void updateSaleStatus(bool sold);
+    void updateSaleStatus();
 
     void getDataFromObject(std::ostream& os) const override;
     void setDataToObject(std::istream& is) override;

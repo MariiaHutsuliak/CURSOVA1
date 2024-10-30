@@ -35,35 +35,64 @@ std::string CommissionShop::getName() const {
     return name;
 }
 
-void CommissionShop::addCommissionShop(std::vector<CommissionShop>& shops) {
-    CommissionShop shop;
+void CommissionShop::input() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // Regex for validating painting title and shop name
     std::regex latinRegex("^[A-Za-z\\s]+$");
 
-    std::cout << "Enter the name for the new shop: ";
-    std::cin.ignore();
-    std::getline(std::cin, shop.name);
-    while (shop.name.empty() || !std::regex_match(shop.name, latinRegex)) {
-        std::cout << "Invalid name. Please use only Latin letters and spaces: ";
-        std::getline(std::cin, shop.name);
+    // Input for shop name with validation
+    while (true) {
+        try {
+            std::cout << "Enter the name of the shop: ";
+            std::getline(std::cin, name);
+            if (name.empty() || !std::regex_match(name, latinRegex)) {
+                throw std::runtime_error("Invalid shop name.");
+            }
+            break;
+        } catch (...) {
+            std::cout << "Invalid input. Please use only Latin letters and spaces for the shop name.\n";
+        }
     }
-    shops.push_back(std::move(shop));
-}
 
-void CommissionShop::addPainting(const std::string& painting, double price) {
-    std::regex latinRegex("^[A-Za-z\\s]+$");
-    if (price <= 0) {
-        std::cout << "Price must be greater than zero. Please enter a valid price.\n";
-        return;
+    // Input for paintings for sale
+    int numPaintings;
+    std::cout << "Enter the number of paintings to add to the shop: ";
+    while (!(std::cin >> numPaintings) || numPaintings < 0) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
-    if (!std::regex_match(painting, latinRegex)) {
-        std::cout << "Invalid painting name. Please use only Latin letters and spaces.\n";
-        return;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline
+
+    paintingsForSale.clear(); // Clear existing entries in case of re-input
+
+    for (int i = 0; i < numPaintings; ++i) {
+        std::string paintingTitle;
+        double price;
+
+        // Input and validate painting title
+        while (true) {
+            std::cout << "Enter the title for painting #" << (i + 1) << " (Latin letters only): ";
+            std::getline(std::cin, paintingTitle);
+            if (std::regex_match(paintingTitle, latinRegex)) {
+                break;
+            }
+            std::cout << "Invalid input. Please use only Latin letters and spaces for the painting title.\n";
+        }
+
+        // Input and validate price
+        std::cout << "Enter the price for painting #" << (i + 1) << ": ";
+        while (!(std::cin >> price) || price <= 0) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a positive price: ";
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline after the price
+
+        // Add the painting to the paintingsForSale map
+        paintingsForSale[paintingTitle] = price;
     }
-    if (paintingsForSale.find(painting) != paintingsForSale.end()) {
-        std::cout << "Painting is already in the commission shop. Cannot add duplicate.\n";
-        return;
-    }
-    paintingsForSale[painting] = price;
 }
 
 void CommissionShop::buyPainting(const std::string& painting, double price) {
@@ -111,27 +140,85 @@ void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
         return;
     }
 
+    std::string shopName;
+    std::cout << "Enter the name of the shop to buy a painting: ";
+    std::cin.ignore(); // Clear the newline from any previous input
+    std::getline(std::cin, shopName);
+
+    // Find the shop by name
+    auto it = std::find_if(shops.begin(), shops.end(), [&shopName](const CommissionShop& shop) {
+        return shop.getName() == shopName;
+    });
+
+    if (it == shops.end()) {
+        std::cout << "Shop not found. Please check the name and try again.\n";
+        return;
+    }
+
+    // Shop found, proceed with buying a painting
     std::string painting;
     double price;
     std::regex latinRegex("^[A-Za-z\\s]+$");
 
-    std::cout << "Enter name of painting for sale: ";
-    std::cin.ignore();
+    std::cout << "Enter the title of the painting to buy: ";
     std::getline(std::cin, painting);
     while (painting.empty() || !std::regex_match(painting, latinRegex)) {
         std::cout << "Invalid painting name. Please use only Latin letters and spaces: ";
         std::getline(std::cin, painting);
     }
 
-    std::cout << "Enter price: ";
+    std::cout << "Enter the price: ";
     while (!(std::cin >> price) || price <= 0) {
+        std::cout << "Invalid input. Please enter a valid positive price: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input. Please enter a valid positive price: ";
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline after the price
+
+    // Attempt to buy the painting and check if added successfully
+    size_t initialSize = it->paintingsForSale.size();
+    it->buyPainting(painting, price);
+    if (it->paintingsForSale.size() > initialSize) {
+        std::cout << "Painting bought by shop: " << it->getName() << "\n";
+    } else {
+        std::cout << "Failed to buy the painting. It may already be in the shop.\n";
+    }
+}
+
+void CommissionShop::sellPaintingInShop(std::vector<CommissionShop>& shops) {
+    if (shops.empty()) {
+        std::cout << "No commission shops available.\n";
+        return;
     }
 
-    shops[0].buyPainting(painting, price);
-    std::cout << "Painting bought by commission shop: " << painting << "\n";
+    std::string shopName;
+    std::cout << "Enter the name of the shop to sell a painting from: ";
+    std::cin.ignore(); // Clear the newline from any previous input
+    std::getline(std::cin, shopName);
+
+    // Find the shop by name
+    auto it = std::find_if(shops.begin(), shops.end(), [&shopName](const CommissionShop& shop) {
+        return shop.getName() == shopName;
+    });
+
+    if (it == shops.end()) {
+        std::cout << "Shop not found. Please check the name and try again.\n";
+        return;
+    }
+
+    // Shop found, proceed with selling a painting
+    std::string painting;
+    std::cout << "Enter the title of the painting to sell: ";
+    std::getline(std::cin, painting);
+
+    // Attempt to sell the painting and check if removed successfully
+    size_t initialSize = it->paintingsForSale.size();
+    it->sellPainting(painting);
+    if (it->paintingsForSale.size() < initialSize) {
+        std::cout << "Painting sold by shop: " << it->getName() << "\n";
+    } else {
+        std::cout << "Failed to sell the painting. It may not exist in the shop.\n";
+    }
 }
 
 void CommissionShop::getDataFromObject(std::ostream& os) const {
@@ -159,17 +246,23 @@ void CommissionShop::setDataToObject(std::istream& is) {
 
 void CommissionShop::loadShops(std::vector<CommissionShop>& shops) {
     std::ifstream file(SHOP_FILE);
-    if (file.is_open()) {
-        if (file.peek() == std::ifstream::traits_type::eof()) {
-            return;
-        }
-        while (!file.eof()) {
-            CommissionShop shop;
-            shop.setDataToObject(file);
+    if (!file.is_open()) {
+        std::cerr << "Error opening collector file.\n";
+        return;
+    }
+
+    shops.clear();
+    while (file.peek() != std::ifstream::traits_type::eof()) {
+        CommissionShop shop;
+        shop.setDataToObject(file);
+
+        // Check for failed data read to avoid pushing incomplete collectors
+        if (!file.fail()) {
             shops.push_back(shop);
         }
-        file.close();
     }
+
+    file.close();
 }
 
 void CommissionShop::saveShops(const std::vector<CommissionShop>& shops) {

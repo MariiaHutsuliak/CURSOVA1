@@ -32,33 +32,12 @@ Collector& Collector::operator=(Collector&& other) noexcept {
 
 Collector::~Collector() {}
 
-void Collector::addOriginalPainting(const Painting& painting) {
-    originalPaintings.push_back(painting);
-}
-
-void Collector::addCopiedPainting(const Painting& painting) {
-    copiedPaintings.push_back(painting);
-}
-
 std::vector<Painting> Collector::getCopiedPaintings() const {
     return copiedPaintings;
 }
 
 std::vector<Painting> Collector::getOriginalPaintings() const {
     return originalPaintings;
-}
-
-void Collector::addCollector(std::vector<Collector>& collectors) {
-    while (true) {
-        try {
-            Collector collector;
-            collector.input();
-            collectors.push_back(std::move(collector));
-            break;
-        } catch (...) {
-            std::cout << "An error occurred while adding the collector. Please try again." << std::endl;
-        }
-    }
 }
 
 void Collector::input() {

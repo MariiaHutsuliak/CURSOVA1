@@ -7,6 +7,8 @@
 #include "Artist.h"
 #include "Auctioneer.h"
 #include "Collector.h"
+#include "Museum.h"
+#include "CommissionShop.h"
 
 class Admin : public Serializable {
 private:
@@ -15,6 +17,8 @@ private:
     constexpr static const char* ADMIN_FILE = "admins.txt";
     constexpr static const char* ARTIST_FILE = "artists.txt";
     constexpr static const char* COLLECTOR_FILE = "collectors.txt";
+    constexpr static const char* MUSEUM_FILE = "museums.txt";
+    constexpr static const char* SHOP_FILE = "shops.txt";
     constexpr static const char* AUCTIONEER_FILE = "auctioneers.txt";
 
     Admin();
@@ -35,7 +39,8 @@ public:
 
     static bool authenticateAdmin();
 
-    static void manageModerators(std::vector<Artist>& artists, std::vector<Collector>& collectors, std::vector<Auctioneer>& auctioneers);
+    static void manageModerators(std::vector<Artist>& artists, std::vector<Collector>& collectors, std::vector<Auctioneer>& auctioneers,
+                                 std::vector<Museum>& museums, std::vector<CommissionShop>& shops);
 
     template<typename T>
     static void manageSpecificModerator(std::vector<T> &moderators, int actionChoice);
@@ -54,8 +59,10 @@ public:
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;
+
     void loadAdmin();
     void saveAdmin() const;
+
 };
 
 #endif // CURSOVA_ADMIN_H

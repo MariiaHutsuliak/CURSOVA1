@@ -1,6 +1,6 @@
 #include "Painting.h"
 
-Painting::Painting() : title(""), artist(nullptr), creationDate(""), genre(""), sold(false) {}
+Painting::Painting() : title("None"), artist(nullptr), creationDate("None"), genre("None"), sold(false) {}
 
 Painting::Painting(const std::string& title, std::shared_ptr<Artist> artist, const std::string& creationDate, const std::string& genre)
         : title(title), artist(artist), creationDate(creationDate), genre(genre), sold(false) {}
@@ -47,6 +47,10 @@ Artist* Painting::getArtist() const {
     return artist.get();
 }
 
+void Painting::updateSaleStatus() {
+    sold = true;
+}
+
 void Painting::setArtist(std::shared_ptr<Artist> artist) {
     if (!artist) {
         std::cout << "Artist cannot be null. Please provide a valid artist.\n";
@@ -71,7 +75,7 @@ void Painting::setGenre(const std::string& genre) {
     this->genre = genre;
 }
 
-bool Painting::isSold() const {
+bool Painting::getSold() const {
     return sold;
 }
 
@@ -83,12 +87,12 @@ void Painting::input() {
     std::regex latinRegex("^[A-Za-z0-9\\s]+$");
     std::regex yearRegex("^\\d{4}$");
     std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");  // Example format for birthDate as YYYY-MM-DD
-
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     // Input and validate title
     while (true) {
         try {
             std::cout << "Enter title: ";
-            std::cin.ignore();
             std::getline(std::cin, title);
             if (title.empty() || !std::regex_match(title, latinRegex)) {
                 std::cin.clear();
@@ -107,8 +111,6 @@ void Painting::input() {
 
     while (true) {
         try {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter artist name: ";
             std::getline(std::cin, artistName);
             if (artistName.empty() || !std::regex_match(artistName, latinRegex)) {
@@ -125,8 +127,6 @@ void Painting::input() {
 
     while (true) {
         try {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter artist birth date (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
             if (artistBirthDate.empty() || !std::regex_match(artistBirthDate, dateRegex)) {
@@ -144,8 +144,6 @@ void Painting::input() {
     while (true) {
         try {
             std::cout << "Enter artist style: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::getline(std::cin, artistStyle);
             if (artistStyle.empty() || !std::regex_match(artistStyle, latinRegex)) {
                 std::cin.clear();
@@ -162,8 +160,6 @@ void Painting::input() {
     // Input and validate creation date
     while (true) {
         try {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter creation date (e.g., 1875): ";
             std::getline(std::cin, creationDate);
             if (creationDate.empty() || !std::regex_match(creationDate, yearRegex)) {
@@ -180,8 +176,6 @@ void Painting::input() {
     // Input and validate genre
     while (true) {
         try {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter genre: ";
             std::getline(std::cin, genre);
             if (genre.empty() || !std::regex_match(genre, latinRegex)) {
@@ -201,43 +195,6 @@ void Painting::displayInfo() const {
               << "\nBirthday: " << artist->getBirthDate() << "\nStyle: " << artist->getStyle()
               << "\nCreation Date: " << creationDate << "\nGenre: " << genre
               << "\nSold: " << (sold ? "Yes" : "No") << std::endl << std::endl;
-}
-
-void Painting::addPainting(std::vector<Painting>& paintings, std::vector<Artist>& artists) {
-    while (true) {
-        try {
-            Painting painting;
-            std::string artistName;
-            std::regex latinRegex("^[A-Za-z\\s]+$");
-
-            std::cout << "Enter artist name: ";
-            std::cin.ignore();
-            std::getline(std::cin, artistName);
-            if (artistName.empty() || !std::regex_match(artistName, latinRegex)) {
-                throw std::runtime_error("Invalid artist name.");
-            }
-
-            std::shared_ptr<Artist> artist = nullptr;
-            for (auto& a : artists) {
-                if (a.getName() == artistName) {
-                    artist = std::make_shared<Artist>(a);
-                    break;
-                }
-            }
-
-            if (!artist) {
-                std::cout << "Artist not found. Please try again with a valid artist.\n";
-                continue;
-            }
-
-            painting.setArtist(artist);
-            painting.input();
-            paintings.push_back(std::move(painting));
-            break;
-        } catch (...) {
-            std::cout << "An error occurred while adding the painting. Please try again.\n";
-        }
-    }
 }
 
 void Painting::sortPaintingsByTitle(std::vector<Painting>& paintings) {
@@ -302,11 +259,6 @@ double Painting::estimateValue() const {
     return baseValue;
 }
 
-void Painting::updateSaleStatus(bool sold) {
-    this->sold = sold;
-    std::cout << "The painting has been marked as " << (sold ? "sold" : "available") << "." << std::endl;
-}
-
 void Painting::getDataFromObject(std::ostream& os) const {
     os << title << std::endl;
     if (artist) {
@@ -336,22 +288,29 @@ void Painting::setDataToObject(std::istream& is) {
     std::getline(is, creationDate);
     std::getline(is, genre);
     is >> sold;
-    is.ignore();
+    setSold(sold);
+    is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void Painting::loadPaintings(std::vector<Painting> &paintings) {
     std::ifstream file(PAINTING_FILE);
-    if (file.is_open()) {
-        if (file.peek() == std::ifstream::traits_type::eof()) {
-            return;
-        }
-        while (!file.eof()) {
-            Painting painting;
-            painting.setDataToObject(file);
+    if (!file.is_open()) {
+        std::cerr << "Error opening collector file.\n";
+        return;
+    }
+
+    paintings.clear();
+    while (file.peek() != std::ifstream::traits_type::eof()) {
+        Painting painting;
+        painting.setDataToObject(file);
+
+        // Check for failed data read to avoid pushing incomplete collectors
+        if (!file.fail()) {
             paintings.push_back(painting);
         }
-        file.close();
     }
+
+    file.close();
 }
 
 void Painting::savePaintings(const std::vector<Painting> &paintings) {

@@ -1,6 +1,6 @@
 Loyd Fled
 1995-12-12
-2
+3
 Lady in Red
 Robert Green
 1979-08-07
@@ -15,6 +15,13 @@ impressionism
 2011-12-15
 impressionism
 0
+Rubin
+Liam Grace
+1567-10-16
+impressionism
+1602
+impressionism
+0
 1
 Mona Lisa
 Robert Green
@@ -25,12 +32,26 @@ renaissance
 0
 John Smith
 1995-03-07
-1
+3
 Sea 
 Aaron Lake
 1888-08-13
 cubism
 1920-07-23
+cubism
+0
+Flowers
+Lilia Sun
+1960-10-17
+impressionism
+1987
+impressionism
+0
+Death
+Salvador Dali
+1678-12-15
+cubism
+1734
 cubism
 0
 1

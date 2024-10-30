@@ -29,13 +29,13 @@ public:
     void setName(const std::string& name);
     [[nodiscard]] std::string getName() const;
 
-    void addCommissionShop(std::vector<CommissionShop>& shops);
-    void addPainting(const std::string& painting, double price);
+    void input();
     void buyPainting(const std::string& painting, double price);
     void sellPainting(const std::string& painting);
     void displayInfo() const override;
 
-    void buyPaintingInShop(std::vector<CommissionShop>& shops);
+    static void buyPaintingInShop(std::vector<CommissionShop>& shops);
+    static void sellPaintingInShop(std::vector<CommissionShop> &shops);
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;

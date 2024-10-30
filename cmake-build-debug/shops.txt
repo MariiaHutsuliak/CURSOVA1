@@ -1,0 +1,6 @@
+Shop
+2
+Fraud
+26000
+Scream
+100000

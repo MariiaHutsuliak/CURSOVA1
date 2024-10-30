@@ -32,13 +32,16 @@ bool Admin::authenticateAdmin() {
     }
 }
 
-void Admin::manageModerators(std::vector<Artist>& artists, std::vector<Collector>& collectors, std::vector<Auctioneer>& auctioneers) {
+void Admin::manageModerators(std::vector<Artist>& artists, std::vector<Collector>& collectors, std::vector<Auctioneer>& auctioneers,
+                            std::vector<Museum>& museums, std::vector<CommissionShop>& shops) {
     int typeChoice, actionChoice;
     do {
         std::cout << "Select Moderator Type:\n";
         std::cout << "1. Artist\n";
         std::cout << "2. Collector\n";
         std::cout << "3. Auctioneer\n";
+        std::cout << "4. Museum\n";
+        std::cout << "5. Commission Shop\n";
         std::cout << "0. Back\n";
         std::cin >> typeChoice;
 
@@ -62,6 +65,12 @@ void Admin::manageModerators(std::vector<Artist>& artists, std::vector<Collector
                 break;
             case 3:
                 manageSpecificModerator(auctioneers, actionChoice);
+                break;
+            case 4:
+                manageSpecificModerator(museums, actionChoice);
+                break;
+            case 5:
+                manageSpecificModerator(shops, actionChoice);
                 break;
             default:
                 std::cout << "Invalid moderator type. Try again.\n";
@@ -111,6 +120,10 @@ void Admin::addModerator(std::vector<T>& moderators) {
         saveModeratorsToFile(moderators, COLLECTOR_FILE);
     } else if constexpr (std::is_same<T, Auctioneer>::value) {
         saveModeratorsToFile(moderators, AUCTIONEER_FILE);
+    } else if constexpr (std::is_same<T, Museum>::value) {
+        saveModeratorsToFile(moderators, MUSEUM_FILE);
+    } else if constexpr (std::is_same<T, CommissionShop>::value) {
+        saveModeratorsToFile(moderators, SHOP_FILE);
     }
 }
 
@@ -135,6 +148,10 @@ void Admin::removeModerator(std::vector<T>& moderators) {
             saveModeratorsToFile(moderators, COLLECTOR_FILE);
         } else if constexpr (std::is_same<T, Auctioneer>::value) {
             saveModeratorsToFile(moderators, AUCTIONEER_FILE);
+        } else if constexpr (std::is_same<T, Museum>::value) {
+            saveModeratorsToFile(moderators, MUSEUM_FILE);
+        } else if constexpr (std::is_same<T, CommissionShop>::value) {
+            saveModeratorsToFile(moderators, SHOP_FILE);
         }
     } else {
         std::cout << "Moderator not found.\n";

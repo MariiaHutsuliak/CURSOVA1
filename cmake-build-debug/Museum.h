@@ -14,7 +14,7 @@
 class Museum : public Serializable, public DataHandler{
 private:
     std::string location;
-    std::string title;
+    std::string name;
     std::vector<Painting> collection;
     constexpr static const std::string MUSEUM_FILE = "museums.txt";
 
@@ -27,20 +27,18 @@ public:
     Museum& operator=(Museum&& other) noexcept;
     ~Museum() override;
 
-    static void addMuseum(std::vector<Museum>& museums);
     [[nodiscard]] std::string getLocation() const;
     void setLocation(const std::string &location);
-    [[nodiscard]] std::string getTitle() const;
-    void setTitle(const std::string &title);
+    [[nodiscard]] std::string getName() const;
+    void setName(const std::string &name);
 
-    void addPaintingToCollection(const Painting& painting);
-    void removePaintingFromCollection(const std::string& paintingTitle);
+    void removePaintingFromCollection(const std::string& paintingName);
+    static void removePaintingFromMuseum(std::vector<Museum> &museums);
 
     void input();
     void displayInfo() const override;
 
     static void sortMuseumsByName(std::vector<Museum>& museums);
-    void organizeExhibition() const;
 
     void getDataFromObject(std::ostream &os) const override;
     void setDataToObject(std::istream &is) override;

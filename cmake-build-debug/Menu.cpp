@@ -63,6 +63,7 @@ void Menu::mainMenu() {
         std::cout << "3. Administrator\n";
         std::cout << "0. Exit\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -92,9 +93,10 @@ void Menu::adminMenu() {
         std::cout << "-------------------------------------------------------------------\n";
         std::cout << "1. Change Admin Credentials\n";
         std::cout << "2. Manage Moderators\n";
-        std::cout << "3. Delete Painting";
+        std::cout << "3. Manage Museums\n";
         std::cout << "0. Back to Main Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -115,7 +117,7 @@ void Menu::adminMenu() {
                 break;
             }
             case 2:
-                Admin::manageModerators(artists, collectors, auctioneers);
+                Admin::manageModerators(artists, collectors, auctioneers, museums, shops);
                 break;
             case 0:
                 std::cout << "Returning to Main Menu...\n";
@@ -127,35 +129,94 @@ void Menu::adminMenu() {
 }
 
 void Menu::moderatorMenu() {
-    int typeChoice;
+    std::cout << "Enter Code Word: ";
+    std::string codeWord = "moderator123";
+    std::string input;
+    std::cin >> input;
+    if (input == codeWord) {
+        std::cout << "Successful entry!" << std::endl;
+        int typeChoice;
+        do {
+            std::cout << "===================================================================\n";
+            std::cout << "Art Lover System\n";
+            std::cout << "===================================================================\n";
+            std::cout << "Moderator Menu:\n";
+            std::cout << "-------------------------------------------------------------------\n";
+            std::cout << "1. Artist Menu\n";
+            std::cout << "2. Collector Menu\n";
+            std::cout << "3. Auctioneer Menu\n";
+            std::cout << "4. Museum Menu\n";
+            std::cout << "5. Commission Shop Menu\n";
+            std::cout << "0. Back to Main Menu\n";
+            std::cout << "===================================================================\n";
+            std::cout << "Enter your choice: ";
+
+            if (!(std::cin >> typeChoice)) {
+                std::cout << "Invalid input. Please enter a number.\n";
+                clearInput();
+                continue;
+            }
+
+            switch (typeChoice) {
+                case 1: artistMenu(); break;
+                case 2: collectorMenu(); break;
+                case 3: auctioneerMenu(); break;
+                case 4: museumMenu(); break;
+                case 5: commissionShopMenu(); break;
+                case 0: std::cout << "Returning to Main Menu...\n"; break;
+                default: std::cout << "Invalid choice. Try again.\n";
+            }
+        } while (typeChoice != 0);
+    } else {
+        std::cout << "Wrong Code Word!" << std::endl;
+    }
+}
+
+void Menu::museumMenu() {
+    int choice;
     do {
         std::cout << "===================================================================\n";
         std::cout << "Art Lover System\n";
         std::cout << "===================================================================\n";
-        std::cout << "Moderator Menu:\n";
+        std::cout << "Museum Menu:\n";
         std::cout << "-------------------------------------------------------------------\n";
-        std::cout << "1. Artist Menu\n";
-        std::cout << "2. Collector Menu\n";
-        std::cout << "3. Auctioneer Menu\n";
-        std::cout << "0. Back to Main Menu\n";
+        std::cout << "1. Add Museum\n";
+        std::cout << "2. View All Museums\n";
+        std::cout << "3. Remove Painting from Museum\n";
+        std::cout << "4. Sort Museums by Name\n";
+        std::cout << "0. Back To Moderator Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
-        if (!(std::cin >> typeChoice)) {
+        if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
             clearInput();
             continue;
         }
 
-        switch (typeChoice) {
-            case 1: artistMenu(); break;
-            case 2: collectorMenu(); break;
-            case 3: auctioneerMenu(); break;
-            case 0: std::cout << "Returning to Main Menu...\n"; break;
-            default: std::cout << "Invalid choice. Try again.\n";
+        switch (choice) {
+            case 1:
+                museums.emplace_back();
+                museums.back().input();
+                saveAllData();
+                break;
+            case 2:
+                for (const auto& museum : museums) museum.displayInfo();
+                break;
+            case 3:
+                Museum::removePaintingFromMuseum(museums);
+                break;
+            case 4:
+                Museum::sortMuseumsByName(museums);
+                break;
+            case 0:
+                std::cout << "Returning to Main Menu...\n";
+                break;
+            default:
+                std::cout << "Invalid choice, please try again.\n";
         }
-    } while (typeChoice != 0);
+    } while (choice != 0);
 }
-
 // Artist menu
 void Menu::artistMenu() {
     int choice;
@@ -170,8 +231,12 @@ void Menu::artistMenu() {
         std::cout << "3. Sort Artists by Name\n";
         std::cout << "4. Search Artists by Name\n";
         std::cout << "5. Filter Artists by Style\n";
+        std::cout << "6. Add new Painting\n";
+        std::cout << "7. View All Paintings\n";
+        std::cout << "8. Delete Painting\n";
         std::cout << "0. Back to Moderator Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -209,6 +274,16 @@ void Menu::artistMenu() {
                 for (const auto& artist : results) artist.displayInfo();
                 break;
             }
+            case 6:{
+                paintings.emplace_back();
+                paintings.back().input();
+                saveAllData();
+                break;
+            }
+            case 7:{
+                for (const auto& painting : paintings) painting.displayInfo();
+                break;
+            }
             case 0:
                 std::cout << "Returning to Moderator Menu...\n";
                 break;
@@ -237,6 +312,7 @@ void Menu::collectorMenu() {
         std::cout << "3. Sort Collectors by Name\n";
         std::cout << "0. Back to Moderator Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -280,6 +356,7 @@ void Menu::auctioneerMenu() {
         std::cout << "4. Sort Auctioneers by Name\n";
         std::cout << "0. Back to Moderator Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -298,12 +375,32 @@ void Menu::auctioneerMenu() {
                 break;
             case 3: {
                 if (!paintings.empty() && !collectors.empty()) {
+                    std::string paintingTitle;
+                    std::cout << "Enter the title of the painting to auction: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, paintingTitle);
+
+                    // Find the painting by title
+                    auto paintingIt = std::find_if(paintings.begin(), paintings.end(),
+                                                   [&paintingTitle](const Painting& painting) {
+                                                       return painting.getTitle() == paintingTitle;
+                                                   });
+
+                    if (paintingIt == paintings.end()) {
+                        std::cout << "Painting with title \"" << paintingTitle << "\" not found.\n";
+                        return;
+                    }
+
                     std::vector<Collector*> collectorPtrs;
                     for (auto& collector : collectors) {
                         collectorPtrs.push_back(&collector);
                     }
-                    Auctioneer::holdAuction(&paintings[0], collectorPtrs);
+
+                    // Conduct the auction with the found painting
+                    auctioneers[0].holdAuction(&(*paintingIt), collectorPtrs);
                     saveAllData();
+                } else {
+                    std::cout << "No paintings or collectors available for auction.\n";
                 }
                 break;
             }
@@ -316,6 +413,62 @@ void Menu::auctioneerMenu() {
             default:
                 std::cout << "Invalid choice, please try again.\n";
         }
+    } while (choice != 0);
+}
+
+void Menu::commissionShopMenu() {
+    int choice;
+
+    do {
+        std::cout << "===================================================================\n";
+        std::cout << "Commission Shop Menu\n";
+        std::cout << "===================================================================\n";
+        std::cout << "1. View All Shops\n";
+        std::cout << "2. Add New Shop\n";
+        std::cout << "3. Buy Painting in Shop\n";
+        std::cout << "4. Sell Painting from Shop\n";
+        std::cout << "0. Back to Moderator Menu\n";
+        std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
+
+        if (!(std::cin >> choice)) {
+            std::cout << "Invalid input. Please enter a number.\n";
+            clearInput();
+            continue;
+        }
+
+        switch (choice) {
+            case 1: {
+                for (const auto& shop : shops) {
+                    shop.displayInfo();
+                    std::cout << std::endl;
+                }
+                break;
+            }
+            case 2: {
+                CommissionShop newShop;
+                newShop.input();
+                shops.push_back(newShop);
+                saveAllData();
+                break;
+            }
+            case 3: {
+                CommissionShop::buyPaintingInShop(shops);
+                saveAllData();
+                break;
+            }
+            case 4: {
+                CommissionShop::sellPaintingInShop(shops);
+                saveAllData();
+                break;
+            }
+            case 0:
+                std::cout << "Returning to main menu...\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+
     } while (choice != 0);
 }
 
@@ -332,16 +485,26 @@ void Menu::userMenu() {
         std::cout << "2. Sort Paintings by Title\n";
         std::cout << "3. Search Paintings by Title\n";
         std::cout << "4. Filter Paintings by Genre\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "5. View Artists\n";
         std::cout << "6. Sort Artists by Name\n";
         std::cout << "7. Search Artists by Name\n";
         std::cout << "8. Filter Artists by Style\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "9. View Auctioneers\n";
         std::cout << "10. Sort Auctioneers by Name\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "11. View Collectors\n";
         std::cout << "12. Sort Collectors by Name\n";
+        std::cout << "-------------------------------------------------------------------\n";
+        std::cout << "13. View Museums\n";
+        std::cout << "14. Sort Museums by Name\n";
+        std::cout << "-------------------------------------------------------------------\n";
+        std::cout << "15. View Commission Shops\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "0. Back to Main Menu\n";
         std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
 
         if (!(std::cin >> choice)) {
             std::cout << "Invalid input. Please enter a number.\n";
@@ -409,6 +572,15 @@ void Menu::userMenu() {
                 break;
             case 12:
                 Collector::sortCollectorsByName(collectors);
+                break;
+            case 13:
+                for (const auto& museum : museums) museum.displayInfo();
+                break;
+            case 14:
+                Museum::sortMuseumsByName(museums);
+                break;
+            case 15:
+                for (const auto& shop : shops) shop.displayInfo();
                 break;
             case 0:
                 std::cout << "Returning to Main Menu...\n";

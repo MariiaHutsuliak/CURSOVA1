@@ -31,10 +31,6 @@ public:
     Collector& operator=(Collector&& other) noexcept;
     ~Collector() override;
 
-    void addCollector(std::vector<Collector>& collectors);
-    void addOriginalPainting(const Painting& painting);
-    void addCopiedPainting(const Painting& painting);
-
     [[nodiscard]] std::vector<Painting> getOriginalPaintings() const;
     [[nodiscard]] std::vector<Painting> getCopiedPaintings() const;
 
