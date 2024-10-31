@@ -1,6 +1,4 @@
 #include "Admin.h"
-#include <fstream>
-#include <algorithm>
 
 Admin::Admin() : userName("admin"), password("password") {}
 

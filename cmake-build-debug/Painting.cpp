@@ -84,19 +84,17 @@ void Painting::setSold(bool sold) {
 }
 
 void Painting::input() {
-    std::regex latinRegex("^[A-Za-z0-9\\s]+$");
+    std::regex latinRegex("^[A-Za-z\\s]+$");
     std::regex yearRegex("^\\d{4}$");
-    std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");  // Example format for birthDate as YYYY-MM-DD
+    std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    // Input and validate title
     while (true) {
         try {
             std::cout << "Enter title: ";
             std::getline(std::cin, title);
             if (title.empty() || !std::regex_match(title, latinRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid title.");
             }
             break;
@@ -104,18 +102,14 @@ void Painting::input() {
             std::cout << "Invalid input for title. Please use only letters, numbers, and spaces.\n";
         }
     }
-
-    // Input and validate artist details
     artist = std::make_shared<Artist>();
     std::string artistName, artistBirthDate, artistStyle;
-
     while (true) {
         try {
             std::cout << "Enter artist name: ";
             std::getline(std::cin, artistName);
             if (artistName.empty() || !std::regex_match(artistName, latinRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid artist name.");
             }
             artist->setName(artistName);
@@ -124,30 +118,26 @@ void Painting::input() {
             std::cout << "Invalid input for artist name. Please use only letters, numbers, and spaces.\n";
         }
     }
-
     while (true) {
         try {
             std::cout << "Enter artist birth date (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
             if (artistBirthDate.empty() || !std::regex_match(artistBirthDate, dateRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid birth date format.");
             }
             artist->setBirthDate(artistBirthDate);
             break;
         } catch (...) {
-            std::cout << "Invalid input for birth date. Please enter in YYYY-MM-DD format.\n";
+            std::cout << "Invalid input for birth date. \nPlease enter in YYYY-MM-DD format.\n";
         }
     }
-
     while (true) {
         try {
             std::cout << "Enter artist style: ";
             std::getline(std::cin, artistStyle);
             if (artistStyle.empty() || !std::regex_match(artistStyle, latinRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid style.");
             }
             artist->setStyle(artistStyle);
@@ -156,15 +146,12 @@ void Painting::input() {
             std::cout << "Invalid input for artist style. Please use only letters, numbers, and spaces.\n";
         }
     }
-
-    // Input and validate creation date
     while (true) {
         try {
             std::cout << "Enter creation date (e.g., 1875): ";
             std::getline(std::cin, creationDate);
             if (creationDate.empty() || !std::regex_match(creationDate, yearRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid creation date.");
             }
             break;
@@ -172,15 +159,12 @@ void Painting::input() {
             std::cout << "Invalid input for creation date. Please enter a valid year.\n";
         }
     }
-
-    // Input and validate genre
     while (true) {
         try {
             std::cout << "Enter genre: ";
             std::getline(std::cin, genre);
             if (genre.empty() || !std::regex_match(genre, latinRegex)) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 throw std::runtime_error("Invalid genre.");
             }
             break;
@@ -238,25 +222,25 @@ std::vector<Painting> Painting::searchPaintingsByTitle(const std::vector<Paintin
     return result;
 }
 
-double Painting::estimateValue() const {
-    if (creationDate.size() < 4 || !std::all_of(creationDate.begin(), creationDate.end(), ::isdigit)) {
-        std::cout << "Invalid creation date format. Unable to estimate value.\n";
-        return 0.0;
+void Painting::removePainting(std::vector<Painting>& paintings) {
+    if (paintings.empty()) {
+        std::cout << "No paintings available to remove.\n";
+        return;
     }
+    std::string titleToRemove;
+    std::cout << "Enter the title of the painting to remove: ";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, titleToRemove);
 
-    double baseValue = 1000.0;
-    if (genre == "impressionism") {
-        baseValue *= 1.5;
-    } else if (genre == "abstract") {
-        baseValue *= 1.2;
+    auto it = std::find_if(paintings.begin(), paintings.end(), [&titleToRemove](const Painting& painting) {
+        return painting.getTitle() == titleToRemove;
+    });
+    if (it != paintings.end()) {
+        paintings.erase(it);
+        std::cout << "Painting \"" << titleToRemove << "\" has been successfully removed.\n";
+    } else {
+        std::cout << "No painting found with the title \"" << titleToRemove << "\".\n";
     }
-
-    int year = std::stoi(creationDate);
-    if (year < 1900) {
-        baseValue *= 2;
-    }
-
-    return baseValue;
 }
 
 void Painting::getDataFromObject(std::ostream& os) const {

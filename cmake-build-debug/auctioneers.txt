@@ -18,3 +18,10 @@ Van Gogh
 500000
 AUCTION_DATE:
 2024-10-23
+Ernest Pars 
+1977-08-02
+Recreation
+Kiran Blues
+100000
+AUCTION_DATE:
+2024-05-15

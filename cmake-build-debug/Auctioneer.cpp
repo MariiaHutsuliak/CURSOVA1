@@ -49,11 +49,7 @@ std::map<std::string, std::pair<std::string,double>> Auctioneer::getAuctionedPai
 void Auctioneer::input() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     Person::input();
-
-    // Regex for validating date in YYYY-MM-DD format
     std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
-
-    // Input for auction date with validation
     while (true) {
         try {
             std::cout << "Enter auction date (YYYY-MM-DD): ";
@@ -66,8 +62,6 @@ void Auctioneer::input() {
             std::cout << "Invalid input. Please enter the date in YYYY-MM-DD format." << std::endl;
         }
     }
-
-    // Input for auctioned paintings
     int numPaintings;
     std::cout << "Enter the number of paintings to be auctioned: ";
     while (!(std::cin >> numPaintings) || numPaintings < 0) {
@@ -76,36 +70,27 @@ void Auctioneer::input() {
         std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    auctionedPaintings.clear(); // Clear existing entries in case of re-input
-
-    // Loop to input each painting's details
+    auctionedPaintings.clear();
     std::regex latinRegex("^[A-Za-z\\s]+$");
     for (int i = 0; i < numPaintings; ++i) {
         std::string paintingTitle, artistName;
         double price;
-
-        // Input and validate painting title
         while (true) {
-            std::cout << "Enter the title for painting #" << (i + 1) << " (Latin letters only): ";
+            std::cout << "Enter the title for painting #" << (i + 1) << " : ";
             std::getline(std::cin, paintingTitle);
             if (std::regex_match(paintingTitle, latinRegex)) {
                 break;
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the title.\n";
         }
-
-        // Input and validate artist name
         while (true) {
-            std::cout << "Enter the artist name for painting #" << (i + 1) << " (Latin letters only): ";
+            std::cout << "Enter the artist name for painting #" << (i + 1) << " : ";
             std::getline(std::cin, artistName);
             if (std::regex_match(artistName, latinRegex)) {
                 break;
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the artist name.\n";
         }
-
-        // Input and validate price
         std::cout << "Enter the price for painting #" << (i + 1) << ": ";
         while (!(std::cin >> price) || price <= 0) {
             std::cin.clear();
@@ -113,8 +98,6 @@ void Auctioneer::input() {
             std::cout << "Invalid input. Please enter a positive price: ";
         }
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        // Add the painting to the map
         auctionedPaintings[paintingTitle] = std::make_pair(artistName, price);
     }
 }
@@ -124,7 +107,6 @@ void Auctioneer::displayInfo() const {
     std::cout << "Birthday: " << getBirthDate() << "\n";
     std::cout << "Auction date: " << auctionDate << "\n";
     std::cout << "Auctioned paintings: \n";
-
     if (auctionedPaintings.empty()) {
         std::cout << "No paintings are currently being auctioned.\n";
     } else {
@@ -132,7 +114,6 @@ void Auctioneer::displayInfo() const {
             const std::string& paintingTitle = pair.first;
             const std::string& artistName = pair.second.first;
             double price = pair.second.second;
-
             std::cout << paintingTitle << " by " << artistName << ", $" << price << "\n";
         } std::cout << std::endl;
     }
@@ -143,7 +124,6 @@ void Auctioneer::sortAuctioneersByName(std::vector<Auctioneer>& auctioneers) {
         std::cout << "No auctioneers to sort." << std::endl;
         return;
     }
-
     std::sort(auctioneers.begin(), auctioneers.end(), [](const Auctioneer& a, const Auctioneer& b) {
         return a.getName() < b.getName();
     });
@@ -155,17 +135,13 @@ void Auctioneer::holdAuction(Painting* painting, std::vector<Collector*>& collec
         std::cout << "Painting does not exist. Please check the painting details." << std::endl;
         return;
     }
-
     if (painting->getSold()) {
         std::cout << "This painting has already been auctioned and cannot be auctioned again.\n";
         return;
     }
-
     std::cout << "Auction for: " << painting->getTitle() << "\n";
     int highestBid = 0;
     Collector* highestBidder = nullptr;
-
-    // Collect bids from all collectors
     for (auto& collector : collectors) {
         int bid = collector->placeBid(painting);
         if (bid > highestBid) {
@@ -173,13 +149,9 @@ void Auctioneer::holdAuction(Painting* painting, std::vector<Collector*>& collec
             highestBidder = collector;
         }
     }
-
-    // Finalize the auction by assigning the painting to the highest bidder
     if (highestBidder) {
         highestBidder->purchasePainting(painting, highestBid);
         std::cout << highestBidder->getName() << " won the auction for $" << highestBid << "!\n";
-
-        // Mark the painting as sold in memory
         painting->updateSaleStatus();
         std::cout << "Painting titled \"" << painting->getTitle() << "\" has been marked as sold and cannot be re-auctioned.\n";
     } else {
@@ -187,67 +159,51 @@ void Auctioneer::holdAuction(Painting* painting, std::vector<Collector*>& collec
     }
 }
 
-
 void Auctioneer::getDataFromObject(std::ostream &os) const {
     Person::getDataFromObject(os);
-
     for (const auto &entry : auctionedPaintings) {
         const std::string &painting = entry.first;
         const std::string &artistName = entry.second.first;
         double price = entry.second.second;
-
         os << painting << std::endl;
         os << artistName << std::endl;
         os << price << std::endl;
     }
-
     os << "AUCTION_DATE:" << std::endl;
     os << auctionDate << std::endl;
 }
 
 void Auctioneer::setDataToObject(std::istream &is) {
-    Person::setDataToObject(is);  // Load base Person data
-
+    Person::setDataToObject(is);
     auctionedPaintings.clear();
     std::string painting;
     std::string artistName;
     double price;
-
-    // Read each painting's details until "AUCTION_DATE:" label is found
     while (std::getline(is, painting)) {
         if (painting == "AUCTION_DATE:") {
             break;
         }
-
         std::getline(is, artistName);
         is >> price;
-        is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Ignore any trailing newline
-
+        is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         auctionedPaintings[painting] = std::make_pair(artistName, price);
     }
-
-    // Read the auction date
     std::getline(is, auctionDate);
 }
 
 void Auctioneer::loadAuctioneers(std::vector<Auctioneer> &auctioneers) {
     std::ifstream file(AUCTIONEER_FILE);
     if (!file.is_open()) {
-        std::cerr << "Error opening collector file.\n";
         return;
     }
-
     auctioneers.clear();
     while (file.peek() != std::ifstream::traits_type::eof()) {
         Auctioneer auctioneer;
         auctioneer.setDataToObject(file);
-
-        // Check for failed data read to avoid pushing incomplete collectors
         if (!file.fail()) {
             auctioneers.push_back(auctioneer);
         }
     }
-
     file.close();
 }
 

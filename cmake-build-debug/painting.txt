@@ -5,13 +5,6 @@ impressionism
 1987
 impressionism
 1
-Death
-Salvador Dali
-1678-12-15
-cubism
-1734
-cubism
-1
 Rose
 Eric White
 1911-07-06
@@ -32,4 +25,18 @@ Frank German
 abstraction
 1821
 abstraction
+1
+The Scream
+Edward Munch
+1863-12-12
+expressionism
+1893
+impressionism
+0
+Sunset
+Rene Sort
+1567-10-09
+realism
+1592
+realism
 0

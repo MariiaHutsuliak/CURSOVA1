@@ -32,7 +32,7 @@ renaissance
 0
 John Smith
 1995-03-07
-3
+4
 Sea 
 Aaron Lake
 1888-08-13
@@ -54,11 +54,36 @@ cubism
 1734
 cubism
 0
+Suspicious
+Frank German
+1789-08-09
+abstraction
+1821
+abstraction
+0
 1
 Sunflowers
 Rubies Silk
 1967-12-12
 realism
 1999-06-21
+realism
+0
+Lucas Wind
+1982-03-23
+1
+Florida
+Nina Cast
+1999-12-18
+realism
+2023-03-04
+realism
+0
+1
+Mona Lisa
+Jack Log
+1899-05-06
+realism
+1941-09-09
 realism
 0

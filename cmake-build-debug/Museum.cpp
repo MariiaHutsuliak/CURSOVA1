@@ -60,12 +60,9 @@ void Museum::removePaintingFromCollection(const std::string& paintingName) {
 
 void Museum::removePaintingFromMuseum(std::vector<Museum>& museums) {
     std::string museumName, paintingName;
-
-    // Select the museum
     std::cout << "Enter the name of the museum: ";
     std::cin.ignore();
     std::getline(std::cin, museumName);
-
     auto museumIt = std::find_if(museums.begin(), museums.end(),
                                  [&museumName](const Museum& museum) {
                                      return museum.getName() == museumName;
@@ -75,19 +72,14 @@ void Museum::removePaintingFromMuseum(std::vector<Museum>& museums) {
         std::cout << "Museum not found.\n";
         return;
     }
-
-    // Select the painting to remove
     std::cout << "Enter the title of the painting to remove: ";
     std::getline(std::cin, paintingName);
-
     museumIt->removePaintingFromCollection(paintingName);
 }
 
 void Museum::input() {
     std::regex latinRegex("^[A-Za-z\\s]+$");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    // Input for museum details
     while (true) {
         try {
             std::cout << "Enter name of the museum: ";
@@ -95,7 +87,6 @@ void Museum::input() {
             if (name.empty() || !std::regex_match(name, latinRegex)) {
                 throw std::runtime_error("Invalid name.");
             }
-
             std::cout << "Enter location: ";
             std::getline(std::cin, location);
             if (location.empty() || !std::regex_match(location, latinRegex)) {
@@ -106,8 +97,6 @@ void Museum::input() {
             std::cout << "Invalid input. Please use only Latin letters and spaces.\n";
         }
     }
-
-    // Input for paintings in the collection
     int numPaintings;
     std::cout << "Enter the number of paintings to add to the collection: ";
     while (!(std::cin >> numPaintings) || numPaintings < 0) {
@@ -115,17 +104,13 @@ void Museum::input() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the newline after entering count
-
-    collection.clear(); // Clear existing paintings in case of re-input
-
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    collection.clear();
     for (int i = 0; i < numPaintings; ++i) {
         Painting painting;
         std::string paintingName, artistName, artistBirthDate, artistStyle, creationDate, genre;
-
-        // Input and validate painting title
         while (true) {
-            std::cout << "Enter the title for painting #" << (i + 1) << " (Latin letters only): ";
+            std::cout << "Enter the title for painting #" << (i + 1) << " : ";
             std::getline(std::cin, paintingName);
             if (std::regex_match(paintingName, latinRegex)) {
                 painting.setTitle(paintingName);
@@ -133,20 +118,15 @@ void Museum::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the title.\n";
         }
-
-        // Input and validate artist name
         while (true) {
-            std::cout << "Enter the artist name for painting #" << (i + 1) << " (Latin letters only): ";
+            std::cout << "Enter the artist name for painting #" << (i + 1) << " : ";
             std::getline(std::cin, artistName);
             if (std::regex_match(artistName, latinRegex)) {
                 break;
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the artist name.\n";
         }
-
-        // Input artist birthdate
         std::regex dateRegex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
-
         while (true) {
             std::cout << "Enter the birth date of the artist (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
@@ -155,34 +135,25 @@ void Museum::input() {
             }
             std::cout << "Invalid date format. Please enter the date in YYYY-MM-DD format.\n";
         }
-        // Input artist style with validation
         while (true) {
-            std::cout << "Enter the artist's style (Latin letters only): ";
+            std::cout << "Enter the artist's style: ";
             std::getline(std::cin, artistStyle);
             if (std::regex_match(artistStyle, latinRegex)) {
                 break;
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the style.\n";
         }
-
-        // Set artist details
         auto artist = std::make_shared<Artist>();
         artist->setName(artistName);
         artist->setBirthDate(artistBirthDate);
         artist->setStyle(artistStyle);
         painting.setArtist(artist);
-
-        // Input creation date
-        std::cout << "Enter the creation date for painting #" << (i + 1) << " (e.g., 1987): ";
+        std::cout << "Enter the creation date for painting #" << (i + 1) << " (e.g. 1987): ";
         std::getline(std::cin, creationDate);
         painting.setCreationDate(creationDate);
-
-        // Input genre
         std::cout << "Enter the genre for painting #" << (i + 1) << ": ";
         std::getline(std::cin, genre);
         painting.setGenre(genre);
-
-        // Add painting to the collection
         collection.push_back(painting);
     }
 }
@@ -198,7 +169,6 @@ void Museum::displayInfo() const {
             painting.displayInfo();
         }
     }
-
 }
 
 void Museum::sortMuseumsByName(std::vector<Museum>& museums) {
@@ -238,21 +208,16 @@ void Museum::setDataToObject(std::istream &is) {
 void Museum::loadMuseums(std::vector<Museum> &museums) {
     std::ifstream file(MUSEUM_FILE);
     if (!file.is_open()) {
-        std::cerr << "Error opening collector file.\n";
         return;
     }
-
     museums.clear();
     while (file.peek() != std::ifstream::traits_type::eof()) {
         Museum museum;
         museum.setDataToObject(file);
-
-        // Check for failed data read to avoid pushing incomplete collectors
         if (!file.fail()) {
             museums.push_back(museum);
         }
     }
-
     file.close();
 }
 

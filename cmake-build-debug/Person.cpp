@@ -42,24 +42,17 @@ void Person::setBirthDate(const std::string &birthDate) {
 
 void Person::input() {
     std::regex latinRegex("^[A-Za-z\\s]+$");
-    std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
-
+    std::regex dateRegex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
     while (true) {
         try {
             std::cout << "Enter name: ";
-            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//this shouldnt be here
             std::getline(std::cin, name);
             if (name.empty() || !std::regex_match(name, latinRegex)) {
-                std::cin.clear();//cin clear for being sure
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
                 throw std::runtime_error("Invalid name.");
             }
-
             std::cout << "Enter birth date (YYYY-MM-DD): ";
             std::getline(std::cin, birthDate);
             if (birthDate.empty() || !std::regex_match(birthDate, dateRegex)) {
-                std::cin.clear();//cin clear for being sure
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
                 throw std::runtime_error("Invalid birth date format.");
             }
             break;

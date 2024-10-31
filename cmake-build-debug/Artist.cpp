@@ -32,18 +32,11 @@ void Artist::input() {
         try {
             Person::input();
             std::regex latinRegex("^[A-Za-z\\s]+$");
-            std::cin.clear();//cin clear for being sure
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
-            std::cout << "Enter style (latin letters only): ";
+            std::cout << "Enter style: ";
             std::getline(std::cin, style);
-
             if (style.empty()) {
-                std::cin.clear();//cin clear for being sure
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
                 throw std::runtime_error("Style cannot be empty.");
             } else if (!std::regex_match(style, latinRegex)) {
-                std::cin.clear();//cin clear for being sure
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//cin inore now here
                 throw std::runtime_error("Style can contain only Latin letters.");
             }
             break;
@@ -70,7 +63,6 @@ void Artist::sortArtistsByName(std::vector<Artist>& artists) {
         std::cout << "No artists available to sort." << std::endl;
         return;
     }
-
     std::sort(artists.begin(), artists.end(), [](const Artist& a, const Artist& b) {
         return a.getName() < b.getName();
     });
@@ -83,15 +75,12 @@ std::vector<Artist> Artist::filterArtistsByStyle(const std::vector<Artist>& arti
         std::cout << "Style cannot be empty for filtering." << std::endl;
         return result;
     }
-
     std::copy_if(artists.begin(), artists.end(), std::back_inserter(result), [&style](const Artist& artist) {
         return artist.getStyle() == style;
     });
-
     if (result.empty()) {
         std::cout << "No artists found with the specified style." << std::endl;
     }
-
     return result;
 }
 
@@ -125,21 +114,16 @@ void Artist::setDataToObject(std::istream &is) {
 void Artist::loadArtists(std::vector<Artist>& artists) {
     std::ifstream file(ARTIST_FILE);
     if (!file.is_open()) {
-        std::cerr << "Error opening collector file.\n";
         return;
     }
-
     artists.clear();
     while (file.peek() != std::ifstream::traits_type::eof()) {
         Artist artist;
         artist.setDataToObject(file);
-
-        // Check for failed data read to avoid pushing incomplete collectors
         if (!file.fail()) {
             artists.push_back(artist);
         }
     }
-
     file.close();
 }
 
