@@ -34,6 +34,7 @@ void Artist::input() {
             std::regex latinRegex("^[A-Za-z\\s]+$");
             std::cout << "Enter style: ";
             std::getline(std::cin, style);
+
             if (style.empty()) {
                 throw std::runtime_error("Style cannot be empty.");
             } else if (!std::regex_match(style, latinRegex)) {

@@ -50,6 +50,7 @@ void Auctioneer::input() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     Person::input();
     std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
+
     while (true) {
         try {
             std::cout << "Enter auction date (YYYY-MM-DD): ";
@@ -62,19 +63,24 @@ void Auctioneer::input() {
             std::cout << "Invalid input. Please enter the date in YYYY-MM-DD format." << std::endl;
         }
     }
+
     int numPaintings;
     std::cout << "Enter the number of paintings to be auctioned: ";
+
     while (!(std::cin >> numPaintings) || numPaintings < 0) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     auctionedPaintings.clear();
     std::regex latinRegex("^[A-Za-z\\s]+$");
+
     for (int i = 0; i < numPaintings; ++i) {
         std::string paintingTitle, artistName;
         double price;
+
         while (true) {
             std::cout << "Enter the title for painting #" << (i + 1) << " : ";
             std::getline(std::cin, paintingTitle);
@@ -83,6 +89,7 @@ void Auctioneer::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the title.\n";
         }
+
         while (true) {
             std::cout << "Enter the artist name for painting #" << (i + 1) << " : ";
             std::getline(std::cin, artistName);
@@ -91,12 +98,15 @@ void Auctioneer::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the artist name.\n";
         }
+
         std::cout << "Enter the price for painting #" << (i + 1) << ": ";
+
         while (!(std::cin >> price) || price <= 0) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input. Please enter a positive price: ";
         }
+
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         auctionedPaintings[paintingTitle] = std::make_pair(artistName, price);
     }
@@ -116,7 +126,7 @@ void Auctioneer::displayInfo() const {
             double price = pair.second.second;
             std::cout << paintingTitle << " by " << artistName << ", $" << price << "\n";
         } std::cout << std::endl;
-    }
+    } std::cout << std::endl;
 }
 
 void Auctioneer::sortAuctioneersByName(std::vector<Auctioneer>& auctioneers) {

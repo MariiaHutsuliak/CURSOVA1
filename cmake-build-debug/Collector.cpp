@@ -47,17 +47,21 @@ void Collector::input() {
     std::regex dateRegex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
     int originalCount, copiedCount;
     std::cout << "Enter the number of original paintings: ";
+
     while (!(std::cin >> originalCount) || originalCount < 0) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a valid positive number for original paintings: ";
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     originalPaintings.clear();
+
     for (int i = 0; i < originalCount; ++i) {
         Painting painting;
         std::string title, creationDate, genre;
         std::shared_ptr<Artist> artist = std::make_shared<Artist>();
+
         while (true) {
             try {
                 std::cout << "Enter title for original painting #" << (i + 1) << " : ";
@@ -70,10 +74,12 @@ void Collector::input() {
                 std::cout << " Please try again.\n";
             }
         }
+
         std::string artistName, artistBirthDate, artistStyle;
         std::cout << "Enter artist name: ";
         std::getline(std::cin, artistName);
         artist->setName(artistName);
+
         while (true) {
             std::cout << "Enter artist birthdate (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
@@ -83,9 +89,11 @@ void Collector::input() {
             }
             std::cout << "Invalid date format. Please try again.\n";
         }
+
         std::cout << "Enter artist style: ";
         std::getline(std::cin, artistStyle);
         artist->setStyle(artistStyle);
+
         while (true) {
             std::cout << "Enter creation date (YYYY-MM-DD): ";
             std::getline(std::cin, creationDate);
@@ -94,6 +102,7 @@ void Collector::input() {
             }
             std::cout << "Invalid date format. Please try again.\n";
         }
+
         std::cout << "Enter genre: ";
         std::getline(std::cin, genre);
         painting.setTitle(title);
@@ -103,18 +112,22 @@ void Collector::input() {
         painting.setSold(false);
         originalPaintings.push_back(painting);
     }
+
     std::cout << "Enter the number of copied paintings: ";
     while (!(std::cin >> copiedCount) || copiedCount < 0) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a valid positive number for copied paintings: ";
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     copiedPaintings.clear();
+
     for (int i = 0; i < copiedCount; ++i) {
         Painting painting;
         std::string title, creationDate, genre;
         std::shared_ptr<Artist> artist = std::make_shared<Artist>();
+
         while (true) {
             try {
                 std::cout << "Enter title for copied painting #" << (i + 1) << " : ";
@@ -127,10 +140,12 @@ void Collector::input() {
                 std::cout << " Please try again.\n";
             }
         }
+
         std::string artistName, artistBirthDate, artistStyle;
         std::cout << "Enter artist name: ";
         std::getline(std::cin, artistName);
         artist->setName(artistName);
+
         while (true) {
             std::cout << "Enter artist birthdate (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
@@ -140,9 +155,11 @@ void Collector::input() {
             }
             std::cout << "Invalid date format. Please try again.\n";
         }
+
         std::cout << "Enter artist style: ";
         std::getline(std::cin, artistStyle);
         artist->setStyle(artistStyle);
+
         while (true) {
             std::cout << "Enter creation date (YYYY-MM-DD): ";
             std::getline(std::cin, creationDate);
@@ -151,6 +168,7 @@ void Collector::input() {
             }
             std::cout << "Invalid date format. Please try again.\n";
         }
+
         std::cout << "Enter genre: ";
         std::getline(std::cin, genre);
         painting.setTitle(title);

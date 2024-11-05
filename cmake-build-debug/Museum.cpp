@@ -80,6 +80,7 @@ void Museum::removePaintingFromMuseum(std::vector<Museum>& museums) {
 void Museum::input() {
     std::regex latinRegex("^[A-Za-z\\s]+$");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     while (true) {
         try {
             std::cout << "Enter name of the museum: ";
@@ -97,18 +98,23 @@ void Museum::input() {
             std::cout << "Invalid input. Please use only Latin letters and spaces.\n";
         }
     }
+
     int numPaintings;
     std::cout << "Enter the number of paintings to add to the collection: ";
+
     while (!(std::cin >> numPaintings) || numPaintings < 0) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     collection.clear();
+
     for (int i = 0; i < numPaintings; ++i) {
         Painting painting;
         std::string paintingName, artistName, artistBirthDate, artistStyle, creationDate, genre;
+
         while (true) {
             std::cout << "Enter the title for painting #" << (i + 1) << " : ";
             std::getline(std::cin, paintingName);
@@ -118,6 +124,7 @@ void Museum::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the title.\n";
         }
+
         while (true) {
             std::cout << "Enter the artist name for painting #" << (i + 1) << " : ";
             std::getline(std::cin, artistName);
@@ -127,6 +134,7 @@ void Museum::input() {
             std::cout << "Invalid input. Please use only Latin letters and spaces for the artist name.\n";
         }
         std::regex dateRegex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
+
         while (true) {
             std::cout << "Enter the birth date of the artist (YYYY-MM-DD): ";
             std::getline(std::cin, artistBirthDate);
@@ -135,6 +143,7 @@ void Museum::input() {
             }
             std::cout << "Invalid date format. Please enter the date in YYYY-MM-DD format.\n";
         }
+
         while (true) {
             std::cout << "Enter the artist's style: ";
             std::getline(std::cin, artistStyle);
@@ -143,6 +152,7 @@ void Museum::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the style.\n";
         }
+
         auto artist = std::make_shared<Artist>();
         artist->setName(artistName);
         artist->setBirthDate(artistBirthDate);

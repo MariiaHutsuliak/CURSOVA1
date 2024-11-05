@@ -34,22 +34,30 @@ void Admin::manageModerators(std::vector<Artist>& artists, std::vector<Collector
                             std::vector<Museum>& museums, std::vector<CommissionShop>& shops) {
     int typeChoice, actionChoice;
     do {
+        std::cout << "===================================================================\n";
         std::cout << "Select Moderator Type:\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "1. Artist\n";
         std::cout << "2. Collector\n";
         std::cout << "3. Auctioneer\n";
         std::cout << "4. Museum\n";
         std::cout << "5. Commission Shop\n";
         std::cout << "0. Back\n";
+        std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
         std::cin >> typeChoice;
 
         if (typeChoice == 0) return;
 
+        std::cout << "===================================================================\n";
         std::cout << "Choose Action:\n";
+        std::cout << "-------------------------------------------------------------------\n";
         std::cout << "1. Add\n";
         std::cout << "2. Remove\n";
         std::cout << "3. View All\n";
         std::cout << "0. Back\n";
+        std::cout << "===================================================================\n";
+        std::cout << "Enter your choice: ";
         std::cin >> actionChoice;
 
         if (actionChoice == 0) continue;
@@ -110,7 +118,7 @@ void Admin::addModerator(std::vector<T>& moderators) {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     newModerator.input();
     moderators.push_back(std::move(newModerator));
-    std::cout << "Moderator added successfully.\n";
+    std::cout << "Moderator/what was created added successfully.\n";
 
     if constexpr (std::is_same<T, Artist>::value) {
         saveModeratorsToFile(moderators, ARTIST_FILE);
@@ -128,7 +136,7 @@ void Admin::addModerator(std::vector<T>& moderators) {
 template <typename T>
 void Admin::removeModerator(std::vector<T>& moderators) {
     std::string name;
-    std::cout << "Enter the username of the moderator to remove: ";
+    std::cout << "Enter the username of the moderator/what was created by moderator to remove: ";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, name);
 
@@ -138,7 +146,7 @@ void Admin::removeModerator(std::vector<T>& moderators) {
 
     if (it != moderators.end()) {
         moderators.erase(it);
-        std::cout << "Moderator removed successfully.\n";
+        std::cout << "Moderator/created by moderator removed successfully.\n";
 
         if constexpr (std::is_same<T, Artist>::value) {
             saveModeratorsToFile(moderators, ARTIST_FILE);
@@ -152,16 +160,16 @@ void Admin::removeModerator(std::vector<T>& moderators) {
             saveModeratorsToFile(moderators, SHOP_FILE);
         }
     } else {
-        std::cout << "Moderator not found.\n";
+        std::cout << "Moderator/created by moderator not found.\n";
     }
 }
 
 template <typename T>
 void Admin::viewModerators(const std::vector<T>& moderators) {
     if (moderators.empty()) {
-        std::cout << "No moderators found.\n";
+        std::cout << "No found.\n";
     } else {
-        std::cout << "List of Moderators:\n";
+        std::cout << "List of Moderators/what was created by moderator:\n";
         for (const auto& mod : moderators) {
             mod.displayInfo();
         }

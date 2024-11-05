@@ -1,13 +1,10 @@
-Susan Dove
-1996-04-09
-Rain
-Richard Black
-1200
-Scream
-Claude Mane
-300000
+Ernest Pars 
+1977-08-02
+Recreation
+Kiran Blues
+100000
 AUCTION_DATE:
-2024-10-22
+2024-05-15
 Leon Oslo
 1990-03-10
 Dinner
@@ -18,10 +15,13 @@ Van Gogh
 500000
 AUCTION_DATE:
 2024-10-23
-Ernest Pars 
-1977-08-02
-Recreation
-Kiran Blues
-100000
+Susan Dove
+1996-04-09
+Rain
+Richard Black
+1200
+Scream
+Claude Mane
+300000
 AUCTION_DATE:
-2024-05-15
+2024-10-22

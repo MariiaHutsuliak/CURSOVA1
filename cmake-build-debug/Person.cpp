@@ -43,6 +43,7 @@ void Person::setBirthDate(const std::string &birthDate) {
 void Person::input() {
     std::regex latinRegex("^[A-Za-z\\s]+$");
     std::regex dateRegex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
+
     while (true) {
         try {
             std::cout << "Enter name: ";

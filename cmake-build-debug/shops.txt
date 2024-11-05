@@ -4,3 +4,11 @@ Fraud
 26000
 Scream
 100000
+Paintings
+2
+Sunset
+200000
+War
+15000
+Shop1
+0

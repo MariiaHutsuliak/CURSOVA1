@@ -89,6 +89,7 @@ void Painting::input() {
     std::regex dateRegex("^\\d{4}-\\d{2}-\\d{2}$");
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     while (true) {
         try {
             std::cout << "Enter title: ";
@@ -102,8 +103,10 @@ void Painting::input() {
             std::cout << "Invalid input for title. Please use only letters, numbers, and spaces.\n";
         }
     }
+
     artist = std::make_shared<Artist>();
     std::string artistName, artistBirthDate, artistStyle;
+
     while (true) {
         try {
             std::cout << "Enter artist name: ";
@@ -118,6 +121,7 @@ void Painting::input() {
             std::cout << "Invalid input for artist name. Please use only letters, numbers, and spaces.\n";
         }
     }
+
     while (true) {
         try {
             std::cout << "Enter artist birth date (YYYY-MM-DD): ";
@@ -132,6 +136,7 @@ void Painting::input() {
             std::cout << "Invalid input for birth date. \nPlease enter in YYYY-MM-DD format.\n";
         }
     }
+
     while (true) {
         try {
             std::cout << "Enter artist style: ";
@@ -146,6 +151,7 @@ void Painting::input() {
             std::cout << "Invalid input for artist style. Please use only letters, numbers, and spaces.\n";
         }
     }
+
     while (true) {
         try {
             std::cout << "Enter creation date (e.g., 1875): ";
@@ -159,6 +165,7 @@ void Painting::input() {
             std::cout << "Invalid input for creation date. Please enter a valid year.\n";
         }
     }
+
     while (true) {
         try {
             std::cout << "Enter genre: ";
@@ -282,18 +289,15 @@ void Painting::loadPaintings(std::vector<Painting> &paintings) {
         std::cerr << "Error opening collector file.\n";
         return;
     }
-
     paintings.clear();
     while (file.peek() != std::ifstream::traits_type::eof()) {
         Painting painting;
         painting.setDataToObject(file);
 
-        // Check for failed data read to avoid pushing incomplete collectors
         if (!file.fail()) {
             paintings.push_back(painting);
         }
     }
-
     file.close();
 }
 

@@ -14,57 +14,41 @@
 #include <stdexcept>
 #include <regex>
 
-/*
- * Клас Collector – представляє колекціонера, який володіє оригінальними та копіями картин.
- * Клас забезпечує функції для управління колекцією картин, участі в аукціонах,
- * збереження та завантаження даних колекціонерів.
- */
 class Collector : public Person, public DataHandler {
 private:
-    std::vector<Painting> originalPaintings; // Оригінальні картини
-    std::vector<Painting> copiedPaintings;   // Копії картин
-    constexpr static const char* COLLECTOR_FILE = "collectors.txt"; // Файл для збереження даних
+    std::vector<Painting> originalPaintings;
+    std::vector<Painting> copiedPaintings;
+    constexpr static const char* COLLECTOR_FILE = "collectors.txt";
 
 public:
-    Collector(); // Конструктор за замовчуванням
-    Collector(const std::string &name, const std::string &birthDate); // Конструктор з параметрами
-
-    // Конструктор з параметрами для ініціалізації картин
+    Collector();
+    Collector(const std::string &name, const std::string &birthDate);
     Collector(const std::string& name, const std::string& birthDate,
               const std::vector<Painting>& originalPaintings, const std::vector<Painting>& copiedPaintings);
 
-    Collector(const Collector &other); // Конструктор копіювання
-    Collector(Collector &&other) noexcept; // Конструктор переміщення
-    Collector& operator=(const Collector& other); // Оператор копіювання
-    Collector& operator=(Collector&& other) noexcept; // Оператор переміщення
-    ~Collector() override; // Деструктор
+    Collector(const Collector &other);
+    Collector(Collector &&other) noexcept;
+    Collector& operator=(const Collector& other);
+    Collector& operator=(Collector&& other) noexcept;
+    ~Collector() override;
 
-    // Отримати оригінальні картини
     [[nodiscard]] std::vector<Painting> getOriginalPaintings() const;
-
-    // Отримати копії картин
     [[nodiscard]] std::vector<Painting> getCopiedPaintings() const;
 
-    void input() override; // Введення даних колекціонера
-    void displayInfo() const override; // Відображення інформації про колекціонера
+    void input() override;
 
-    // Участь у торгах, повертає ставку
+    void displayInfo() const override;
+
     int placeBid(Painting* painting);
 
-    // Придбати картину за вказаною ціною
     void purchasePainting(Painting* painting, int price);
 
-    // Сортування колекціонерів за іменем
     static void sortCollectorsByName(std::vector<Collector>& collectors);
 
-    // Серіалізація об'єкта
     void getDataFromObject(std::ostream &os) const override;
-    // Десеріалізація об'єкта
     void setDataToObject(std::istream &is) override;
 
-    // Завантаження колекціонерів з файлу
     static void loadCollectors(std::vector<Collector>& collectors);
-    // Збереження колекціонерів у файл
     static void saveCollectors(const std::vector<Collector>& collectors);
 };
 

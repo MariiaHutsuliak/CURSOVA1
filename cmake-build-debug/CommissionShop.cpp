@@ -38,6 +38,7 @@ std::string CommissionShop::getName() const {
 void CommissionShop::input() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::regex latinRegex("^[A-Za-z\\s]+$");
+
     while (true) {
         try {
             std::cout << "Enter the name of the shop: ";
@@ -50,18 +51,23 @@ void CommissionShop::input() {
             std::cout << "Invalid input. Please use only Latin letters and spaces for the shop name.\n";
         }
     }
+
     int numPaintings;
     std::cout << "Enter the number of paintings to add to the shop: ";
+
     while (!(std::cin >> numPaintings) || numPaintings < 0) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid input. Please enter a positive integer for the number of paintings: ";
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     paintingsForSale.clear();
+
     for (int i = 0; i < numPaintings; ++i) {
         std::string paintingTitle;
         double price;
+
         while (true) {
             std::cout << "Enter the title for painting #" << (i + 1) << " : ";
             std::getline(std::cin, paintingTitle);
@@ -70,12 +76,15 @@ void CommissionShop::input() {
             }
             std::cout << "Invalid input. Please use only Latin letters and spaces for the painting title.\n";
         }
+
         std::cout << "Enter the price for painting #" << (i + 1) << ": ";
+
         while (!(std::cin >> price) || price <= 0) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input. Please enter a positive price: ";
         }
+
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         paintingsForSale[paintingTitle] = price;
     }
@@ -118,6 +127,7 @@ void CommissionShop::displayInfo() const {
     for (const auto& pair : paintingsForSale) {
         std::cout << pair.first << " ($" << pair.second << ")\n";
     }
+    std::cout << std::endl;
 }
 
 void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
@@ -125,6 +135,7 @@ void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
         std::cout << "No commission shops available.\n";
         return;
     }
+
     std::string shopName;
     std::cout << "Enter the name of the shop to buy a painting: ";
     std::cin.ignore();
@@ -141,19 +152,24 @@ void CommissionShop::buyPaintingInShop(std::vector<CommissionShop>& shops) {
     std::regex latinRegex("^[A-Za-z\\s]+$");
     std::cout << "Enter the title of the painting to buy: ";
     std::getline(std::cin, painting);
+
     while (painting.empty() || !std::regex_match(painting, latinRegex)) {
         std::cout << "Invalid painting name. Please use only Latin letters and spaces: ";
         std::getline(std::cin, painting);
     }
+
     std::cout << "Enter the price: ";
+
     while (!(std::cin >> price) || price <= 0) {
         std::cout << "Invalid input. Please enter a valid positive price: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
+
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     size_t initialSize = it->paintingsForSale.size();
     it->buyPainting(painting, price);
+
     if (it->paintingsForSale.size() > initialSize) {
         std::cout << "Painting bought by shop: " << it->getName() << "\n";
     } else {
@@ -166,6 +182,7 @@ void CommissionShop::sellPaintingInShop(std::vector<CommissionShop>& shops) {
         std::cout << "No commission shops available.\n";
         return;
     }
+
     std::string shopName;
     std::cout << "Enter the name of the shop to sell a painting from: ";
     std::cin.ignore();
@@ -182,6 +199,7 @@ void CommissionShop::sellPaintingInShop(std::vector<CommissionShop>& shops) {
     std::getline(std::cin, painting);
     size_t initialSize = it->paintingsForSale.size();
     it->sellPainting(painting);
+
     if (it->paintingsForSale.size() < initialSize) {
         std::cout << "Painting sold by shop: " << it->getName() << "\n";
     } else {

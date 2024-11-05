@@ -9,39 +9,30 @@
 #include <regex>
 #include <limits>
 
-/*
- * Клас Person – базовий клас для зберігання інформації про людину, що містить
- * атрибути і методи для роботи з іменем та датою народження.
- */
 class Person : public Serializable {
 private:
-    std::string name; // Ім'я особи
-    std::string birthDate; // Дата народження
+    std::string name;
+    std::string birthDate;
 
 public:
-    Person(); // Конструктор за замовчуванням
-    Person(const std::string &name, const std::string &birthDate); // Конструктор з параметрами
-    Person(const Person& other); // Конструктор копіювання
-    Person(Person&& other) noexcept; // Конструктор переміщення
-    Person& operator=(const Person& other); // Оператор копіювання
-    Person& operator=(Person&& other) noexcept; // Оператор переміщення
-    ~Person() override; // Деструктор
+    Person();
+    Person(const std::string &name, const std::string &birthDate);
+    Person(const Person& other);
+    Person(Person&& other) noexcept;
+    Person& operator=(const Person& other);
+    Person& operator=(Person&& other) noexcept;
 
-    virtual void input(); // Метод введення даних особи
+    virtual ~Person() override;
 
-    // Геттер для імені особи
+    virtual void input() = 0;
+
     [[nodiscard]] std::string getName() const;
-    // Сеттер для імені особи
     void setName(const std::string &name);
 
-    // Геттер для дати народження
     [[nodiscard]] std::string getBirthDate() const;
-    // Сеттер для дати народження
     void setBirthDate(const std::string &birthDate);
 
-    // Серіалізація об'єкта
     void getDataFromObject(std::ostream &os) const override;
-    // Десеріалізація об'єкта
     void setDataToObject(std::istream &is) override;
 };
 

@@ -134,6 +134,7 @@ void Menu::adminMenu() {
                 break;
             case 0:
                 std::cout << "Returning to Main Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice. Try again.\n";
@@ -177,7 +178,7 @@ void Menu::moderatorMenu() {
                 case 3: auctioneerMenu(); break;
                 case 4: museumMenu(); break;
                 case 5: commissionShopMenu(); break;
-                case 0: std::cout << "Returning to Main Menu...\n"; break;
+                case 0: std::cout << "Returning to Main Menu...\n"; clearInput(); break;
                 default: std::cout << "Invalid choice. Try again.\n";
             }
         } while (typeChoice != 0);
@@ -225,6 +226,7 @@ void Menu::museumMenu() {
                 break;
             case 0:
                 std::cout << "Returning to Main Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
@@ -301,6 +303,7 @@ void Menu::artistMenu() {
                 saveAllData();
             case 0:
                 std::cout << "Returning to Moderator Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
@@ -344,6 +347,7 @@ void Menu::collectorMenu() {
                 break;
             case 0:
                 std::cout << "Returning to Moderator Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
@@ -413,6 +417,7 @@ void Menu::auctioneerMenu() {
                 break;
             case 0:
                 std::cout << "Returning to Moderator Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
@@ -463,6 +468,7 @@ void Menu::commissionShopMenu() {
                 break;
             case 0:
                 std::cout << "Returning to main menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice. Please try again.\n";
@@ -581,6 +587,7 @@ void Menu::userMenu() {
                 break;
             case 0:
                 std::cout << "Returning to Main Menu...\n";
+                clearInput();
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
